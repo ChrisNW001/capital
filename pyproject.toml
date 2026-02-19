@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pitchdeck"
+version = "0.1.0"
+description = "Pitch deck generator and validator for B2B AI/SaaS companies"
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=0.82.0",
+    "pymupdf>=1.27",
+    "pymupdf4llm>=0.0.17",
+    "python-docx>=1.2.0",
+    "typer[all]>=0.24.0",
+    "ruamel.yaml>=0.19",
+    "pydantic>=2.0",
+    "questionary>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.scripts]
+pitchdeck = "pitchdeck.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pitchdeck"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
