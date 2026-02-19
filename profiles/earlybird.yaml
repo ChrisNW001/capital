@@ -1,0 +1,75 @@
+name: Earlybird Capital
+fund_name: Fund VII
+aum_eur: 2000000000  # EUR 2B total AUM
+stage_focus:
+  - pre-seed
+  - seed
+  - series-a
+sector_focus:
+  - enterprise-software
+  - enterprise-ai
+  - deep-tech
+  - fintech
+  - sustainability
+geo_focus:
+  - DACH
+  - Western Europe
+  - Central Europe
+  - Eastern Europe
+thesis_points:
+  - "European digital sovereignty \u2014 AI infrastructure that keeps European data and decisions in European hands"
+  - "Category creation \u2014 companies defining new market categories (like UiPath defined RPA, remberg defined XRM)"
+  - "Capital-efficient growth \u2014 burn multiple below 1.5x, revenue-to-raised ratio near 1:1"
+  - "AI as infrastructure, not veneer \u2014 proprietary data moats, workflow automation, vertical specialization"
+  - "Deep tech with clear commercialization path \u2014 not pure research, but applied AI solving real enterprise problems"
+  - "Global winner potential from European base \u2014 can this company lead globally?"
+  - "Industrial/enterprise domain expertise \u2014 founders who deeply understand the vertical they serve"
+portfolio_companies:
+  - "Aleph Alpha (AI sovereignty, foundation models)"
+  - "remberg (AI maintenance platform for industrials)"
+  - "HiveMQ (IoT infrastructure)"
+  - "EthonAI (industrial AI quality inspection)"
+  - "Mostly AI (synthetic data)"
+  - "Energy Robotics (industrial robotics)"
+  - "Sikoia (fintech data unification)"
+key_partners:
+  - name: Dr. Andre Retterath
+    focus: "Enterprise Software, AI infrastructure, data tools, developer tools, robotics, OSS"
+    background: "PhD TU Munich (ML in VC), ex-ThyssenKrupp process automation, ex-GE management consulting"
+deck_preferences:
+  preferred_slide_count: 15
+  must_include_slides:
+    - cover
+    - executive-summary
+    - problem
+    - why-now
+    - solution
+    - product
+    - market-sizing
+    - business-model
+    - traction
+    - go-to-market
+    - competitive-landscape
+    - team
+    - financials
+    - the-ask
+    - ai-architecture
+  metrics_emphasis:
+    - "ARR and YoY growth rate"
+    - "Net Dollar Retention (NDR)"
+    - "Gross margin trajectory"
+    - "Burn multiple (new ARR / cash burned)"
+    - "Capital efficiency ratio (revenue / total raised)"
+    - "Customer count and logo quality"
+    - "ACV and expansion revenue"
+    - "Bottom-up SOM with methodology"
+  narrative_style: data-driven
+  market_sizing_approach: bottom-up
+custom_checks:
+  - "European sovereignty angle must be present"
+  - "Bottom-up market sizing required (not just top-down TAM)"
+  - "Capital efficiency must be explicitly highlighted"
+  - "Named or anonymized customer evidence with quantified ROI"
+  - "AI commoditization risk must be proactively addressed"
+  - "Gross margin trajectory must be shown or discussed"
+  - "Category creation narrative should be present"
