@@ -5,9 +5,13 @@ from ruamel.yaml import YAML
 
 from pitchdeck.models import (
     CompanyProfile,
+    CustomCheckResult,
     DeckPreferences,
+    DeckValidationResult,
+    DimensionScore,
     PitchDeck,
     SlideContent,
+    SlideValidationScore,
     VCPartner,
     VCProfile,
 )
@@ -126,3 +130,151 @@ def sample_deck(sample_slide):
         gaps_identified=["NDR percentage missing"],
         gaps_filled={"revenue_eur": "2300000"},
     )
+
+
+@pytest.fixture
+def sample_multi_slide_deck():
+    """A realistic 15-slide deck for validation testing."""
+    slides = []
+    slide_types = [
+        "cover", "executive-summary", "problem", "why-now",
+        "solution", "product", "market-sizing", "business-model",
+        "traction", "go-to-market", "competitive-landscape",
+        "team", "financials", "the-ask", "ai-architecture",
+    ]
+    for i, stype in enumerate(slide_types, 1):
+        slides.append(
+            SlideContent(
+                slide_number=i,
+                slide_type=stype,
+                title=f"Slide {i} Title",
+                headline=f"Key insight for {stype}",
+                bullets=[
+                    f"Point {j} for {stype}"
+                    for j in range(1, 4)
+                ],
+                metrics=[f"Metric for {stype}"]
+                if stype
+                in (
+                    "executive-summary",
+                    "traction",
+                    "business-model",
+                    "market-sizing",
+                    "financials",
+                )
+                else [],
+                speaker_notes=f"Say this about {stype}.",
+                transition_to_next=f"Moving to next topic..."
+                if i < 15
+                else "",
+                vc_alignment_notes=[
+                    f"Aligns with thesis point for {stype}"
+                ],
+            )
+        )
+    return PitchDeck(
+        company_name="Neurawork",
+        target_vc="Test VC",
+        generated_at="2026-02-19T12:00:00",
+        slides=slides,
+        narrative_arc="Hook > Tension > Resolution > Proof > Trust > Ask",
+        gaps_identified=["NDR percentage missing"],
+    )
+
+
+@pytest.fixture
+def sample_validation_result():
+    """A sample DeckValidationResult for report rendering tests."""
+    return DeckValidationResult(
+        deck_name="Neurawork",
+        target_vc="Test VC",
+        validated_at="2026-02-19T12:00:00",
+        overall_score=73,
+        pass_threshold=60,
+        pass_fail=True,
+        dimension_scores=[
+            DimensionScore(
+                dimension="completeness",
+                score=80,
+                weight=0.25,
+                rationale="15/15 slides present, 14 with speaker notes",
+                evidence_found=["15/15 slides", "Speaker notes present"],
+                evidence_missing=["1 slide missing notes"],
+            ),
+            DimensionScore(
+                dimension="metrics_density",
+                score=65,
+                weight=0.20,
+                rationale="12 metrics found, 20 expected",
+                evidence_found=["ARR present", "Customer count present"],
+                evidence_missing=["NDR missing", "Burn multiple missing"],
+            ),
+            DimensionScore(
+                dimension="narrative_coherence",
+                score=75,
+                weight=0.20,
+                rationale="Good flow with minor transition gaps",
+            ),
+            DimensionScore(
+                dimension="thesis_alignment",
+                score=70,
+                weight=0.20,
+                rationale="5/7 thesis points addressed",
+            ),
+            DimensionScore(
+                dimension="common_mistakes",
+                score=80,
+                weight=0.15,
+                rationale="No major mistakes detected",
+            ),
+        ],
+        slide_scores=[
+            SlideValidationScore(
+                slide_number=1,
+                slide_type="cover",
+                score=90,
+            ),
+            SlideValidationScore(
+                slide_number=9,
+                slide_type="traction",
+                score=55,
+                issues=["Missing NDR metric"],
+                suggestions=["Add NDR or explain unavailability"],
+            ),
+        ],
+        custom_check_results=[
+            CustomCheckResult(
+                check="European sovereignty angle must be present",
+                passed=True,
+                evidence="Keywords found: sovereign, european",
+            ),
+            CustomCheckResult(
+                check="Bottom-up market sizing required",
+                passed=False,
+                evidence="",
+            ),
+        ],
+        top_strengths=[
+            "Strong revenue traction for stage",
+            "Clear AI infrastructure positioning",
+        ],
+        critical_gaps=[
+            "No NDR data",
+            "Bottom-up market sizing missing",
+        ],
+        improvement_priorities=[
+            "Address VC requirement: Bottom-up market sizing required",
+            "No NDR data",
+            "Fix slide 9 (traction): Missing NDR metric",
+        ],
+        recommendation="Strong candidate with fixable gaps. Add NDR and bottom-up SOM.",
+    )
+
+
+@pytest.fixture
+def sample_deck_json(sample_multi_slide_deck, tmp_path):
+    """Write a multi-slide deck as JSON to a temp file."""
+    json_path = tmp_path / "deck.json"
+    with open(json_path, "w") as f:
+        f.write(sample_multi_slide_deck.model_dump_json(indent=2))
+    return json_path

@@ -125,3 +125,42 @@ class GapQuestion(BaseModel):
     importance: str  # "critical", "important", "nice-to-have"
     default: Optional[str] = None
     choices: List[str] = Field(default_factory=list)
+
+
+class DimensionScore(BaseModel):
+    dimension: str  # "completeness", "metrics_density", "narrative_coherence", "thesis_alignment", "common_mistakes"
+    score: int = Field(ge=0, le=100)
+    weight: float  # 0.0-1.0
+    rationale: str
+    evidence_found: List[str] = Field(default_factory=list)
+    evidence_missing: List[str] = Field(default_factory=list)
+
+
+class SlideValidationScore(BaseModel):
+    slide_number: int
+    slide_type: str
+    score: int = Field(ge=0, le=100)
+    issues: List[str] = Field(default_factory=list)
+    suggestions: List[str] = Field(default_factory=list)
+
+
+class CustomCheckResult(BaseModel):
+    check: str  # the original custom_check string from VCProfile
+    passed: bool
+    evidence: str = ""
+
+
+class DeckValidationResult(BaseModel):
+    deck_name: str
+    target_vc: str
+    validated_at: str
+    overall_score: int = Field(ge=0, le=100)
+    pass_threshold: int = 60
+    pass_fail: bool
+    dimension_scores: List[DimensionScore]
+    slide_scores: List[SlideValidationScore]
+    custom_check_results: List[CustomCheckResult]
+    top_strengths: List[str]
+    critical_gaps: List[str]
+    improvement_priorities: List[str]  # ordered by impact
+    recommendation: str

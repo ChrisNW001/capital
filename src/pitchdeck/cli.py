@@ -33,6 +33,10 @@ def generate(
         bool,
         typer.Option("--skip-gaps", help="Skip interactive gap-filling"),
     ] = False,
+    save_json: Annotated[
+        str,
+        typer.Option("--json", help="Also save deck as JSON (for validation)"),
+    ] = "",
 ):
     """Generate a pitch deck from company documents."""
     import os
@@ -119,6 +123,16 @@ def generate(
     save_markdown(deck, output)
     console.print(f"\n[bold green]Deck saved to {output}[/bold green]")
     console.print(f"  Slides: {len(deck.slides)}")
+
+    # 7. Save JSON (for validation pipeline)
+    if save_json:
+        json_path = save_json
+    else:
+        json_path = output.rsplit(".", 1)[0] + ".json"
+    with open(json_path, "w") as f:
+        f.write(deck.model_dump_json(indent=2))
+    console.print(f"  JSON: {json_path}")
+
     if deck.gaps_identified:
         console.print(
             f"  [yellow]Remaining gaps: {len(deck.gaps_identified)}[/yellow]"
@@ -139,6 +153,130 @@ def profiles():
         console.print("[bold]Available VC profiles:[/bold]")
         for name in available:
             console.print(f"  - {name}")
+
+
+@app.command()
+def validate(
+    deck_file: Annotated[
+        str,
+        typer.Argument(help="Path to deck JSON file"),
+    ],
+    vc: Annotated[
+        str,
+        typer.Option("--vc", "-v", help="VC profile name (without .yaml)"),
+    ] = "earlybird",
+    output: Annotated[
+        str,
+        typer.Option("--output", "-o", help="Validation report output path"),
+    ] = "validation_report.md",
+    threshold: Annotated[
+        int,
+        typer.Option("--threshold", "-t", help="Pass/fail threshold (0-100)"),
+    ] = 60,
+    skip_llm: Annotated[
+        bool,
+        typer.Option("--skip-llm", help="Skip LLM scoring (rule-based only)"),
+    ] = False,
+):
+    """Score a pitch deck against VC-specific rubrics."""
+    import json as json_module
+
+    from pitchdeck.engine.validator import validate_deck
+    from pitchdeck.models import PitchDeck, PitchDeckError
+    from pitchdeck.output import save_validation_report
+    from pitchdeck.profiles import load_vc_profile
+
+    # 1. Read deck JSON
+    console.print(f"[bold]Loading deck: {deck_file}[/bold]")
+    try:
+        with open(deck_file) as f:
+            deck_data = f.read()
+        deck = PitchDeck.model_validate_json(deck_data)
+        console.print(
+            f"  [green]OK[/green] {deck.company_name} "
+            f"({len(deck.slides)} slides)"
+        )
+    except FileNotFoundError:
+        console.print(f"  [red]FAIL[/red] File not found: {deck_file}")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"  [red]FAIL[/red] {e}")
+        raise typer.Exit(1)
+
+    # 2. Load VC profile
+    console.print(f"\n[bold]Loading VC profile: {vc}[/bold]")
+    try:
+        vc_profile = load_vc_profile(vc)
+        console.print(
+            f"  [green]OK[/green] {vc_profile.name} "
+            f"({len(vc_profile.custom_checks)} custom checks)"
+        )
+    except Exception as e:
+        console.print(f"  [red]FAIL[/red] {e}")
+        raise typer.Exit(1)
+
+    # 3. Validate
+    if skip_llm:
+        console.print(
+            "\n[bold]Running rule-based validation...[/bold]"
+        )
+    else:
+        import os
+
+        if not os.environ.get("ANTHROPIC_API_KEY"):
+            console.print(
+                "[yellow]Warning: ANTHROPIC_API_KEY not set. "
+                "Running rule-based only.[/yellow]"
+            )
+            skip_llm = True
+
+    if not skip_llm:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn(
+                "[progress.description]{task.description}"
+            ),
+            console=console,
+        ) as progress:
+            task = progress.add_task(
+                "Scoring deck with Claude...", total=None
+            )
+            result = validate_deck(
+                deck, vc_profile, threshold, skip_llm
+            )
+            progress.remove_task(task)
+    else:
+        console.print(
+            "\n[bold]Running rule-based validation...[/bold]"
+        )
+        result = validate_deck(
+            deck, vc_profile, threshold, skip_llm=True
+        )
+
+    # 4. Save report
+    save_validation_report(result, output)
+
+    # 5. Print summary
+    pass_fail = "[green]PASS[/green]" if result.pass_fail else "[red]FAIL[/red]"
+    console.print(f"\n[bold]Overall Score: {result.overall_score}/100 — {pass_fail}[/bold]")
+    console.print("")
+    for dim in result.dimension_scores:
+        name = dim.dimension.replace("_", " ").title()
+        console.print(f"  {name}: {dim.score}/100")
+
+    passed_checks = sum(1 for c in result.custom_check_results if c.passed)
+    total_checks = len(result.custom_check_results)
+    if total_checks:
+        console.print(
+            f"\n  VC Checks: {passed_checks}/{total_checks} passed"
+        )
+
+    if result.improvement_priorities:
+        console.print("\n[bold yellow]Top Improvements:[/bold yellow]")
+        for i, p in enumerate(result.improvement_priorities[:5], 1):
+            console.print(f"  {i}. {p}")
+
+    console.print(f"\n[bold]Report saved to {output}[/bold]")
 
 
 if __name__ == "__main__":
