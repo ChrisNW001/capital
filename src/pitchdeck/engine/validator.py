@@ -6,7 +6,15 @@ import re
 from datetime import datetime
 from typing import List, Optional
 
-from anthropic import Anthropic
+from anthropic import (
+    Anthropic,
+    APIStatusError,
+    APITimeoutError,
+    AuthenticationError,
+    RateLimitError,
+)
+
+from pitchdeck.engine.narrative import _build_vc_context
 
 from pitchdeck.engine.slides import SLIDE_TEMPLATES
 from pitchdeck.models import (
@@ -109,7 +117,7 @@ def _score_slide_rules(slide: SlideContent) -> SlideValidationScore:
                 )
                 score -= missing_ratio * 3
 
-        # Empty bullets for non-cover slides
+        # Empty bullets check — only for slides expecting bullets (max_bullets > 0)
         if template.max_bullets > 0 and not slide.bullets:
             issues.append("No bullet points on a slide that expects them")
             score -= 10
@@ -135,7 +143,7 @@ def _score_slide_rules(slide: SlideContent) -> SlideValidationScore:
 
 
 def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScore:
-    """Score deck completeness: slide count, required elements, data coverage."""
+    """Score deck completeness: slide count, required slide types, speaker notes coverage, and data gaps."""
     evidence_found = []
     evidence_missing = []
 
@@ -265,7 +273,7 @@ def _score_metrics_density(
 
 def _check_custom_checks(
     deck: PitchDeck, vc_profile: VCProfile
-) -> list[CustomCheckResult]:
+) -> List[CustomCheckResult]:
     """Evaluate VC-specific custom checks via keyword matching."""
     results = []
     all_content = " ".join(
@@ -359,9 +367,6 @@ def _score_qualitative(
         )
 
     client = Anthropic()
-
-    from pitchdeck.engine.narrative import _build_vc_context
-
     vc_context = _build_vc_context(vc_profile)
 
     system_messages = [
@@ -438,15 +443,43 @@ OUTPUT FORMAT (return ONLY this JSON):
             system=system_messages,
             messages=[{"role": "user", "content": user_prompt}],
         )
+    except AuthenticationError:
+        raise PitchDeckError(
+            "Invalid API key. Check ANTHROPIC_API_KEY at https://console.anthropic.com/"
+        )
+    except RateLimitError:
+        raise PitchDeckError(
+            "Anthropic API rate limit hit. Wait a moment and try again."
+        )
+    except APITimeoutError:
+        raise PitchDeckError(
+            "Anthropic API timed out. The deck may be too large — "
+            "try --skip-llm for rule-based scoring only."
+        )
+    except APIStatusError as e:
+        raise PitchDeckError(
+            f"Anthropic API error (HTTP {e.status_code}): {e.message}"
+        ) from e
     except Exception as e:
-        raise PitchDeckError(f"Claude API call failed: {e}") from e
+        raise PitchDeckError(f"Unexpected error calling Claude API: {e}") from e
 
     return _parse_validation_response(response)
 
 
 def _parse_validation_response(response) -> dict:
     """Extract structured validation data from Claude response."""
-    raw_text = response.content[0].text
+    if not response.content:
+        raise PitchDeckError(
+            "Claude returned an empty response. "
+            "The deck may be too large — try reducing slide count."
+        )
+    content_block = response.content[0]
+    if not hasattr(content_block, "text"):
+        raise PitchDeckError(
+            f"Unexpected Claude response format: "
+            f"expected text block, got {type(content_block).__name__}"
+        )
+    raw_text = content_block.text
 
     json_match = re.search(r"\{[\s\S]*\}", raw_text)
     if not json_match:
@@ -464,10 +497,10 @@ def _parse_validation_response(response) -> dict:
 
 
 def _build_rule_summary(
-    slide_scores: list[SlideValidationScore],
+    slide_scores: List[SlideValidationScore],
     completeness: DimensionScore,
     metrics_density: DimensionScore,
-    custom_checks: list[CustomCheckResult],
+    custom_checks: List[CustomCheckResult],
 ) -> str:
     """Summarize rule-based findings for LLM context."""
     lines = [
@@ -496,10 +529,10 @@ def _build_rule_summary(
 
 
 def _build_improvement_priorities(
-    slide_scores: list[SlideValidationScore],
-    custom_checks: list[CustomCheckResult],
-    critical_gaps: list[str],
-) -> list[str]:
+    slide_scores: List[SlideValidationScore],
+    custom_checks: List[CustomCheckResult],
+    critical_gaps: List[str],
+) -> List[str]:
     """Build a prioritized list of improvements, most impactful first."""
     priorities = []
 
@@ -562,12 +595,16 @@ def validate_deck(
             """Safely extract a dimension dict from LLM response."""
             dim = data.get(key)
             if not isinstance(dim, dict):
+                available_keys = list(data.keys()) if isinstance(data, dict) else "non-dict"
                 raise PitchDeckError(
-                    f"LLM response missing or malformed '{key}' dimension"
+                    f"LLM response missing or malformed '{key}' dimension. "
+                    f"Available keys: {available_keys}"
                 )
             if "score" not in dim or "rationale" not in dim:
+                missing = [f for f in ["score", "rationale"] if f not in dim]
                 raise PitchDeckError(
-                    f"LLM response '{key}' missing required 'score' or 'rationale'"
+                    f"LLM response '{key}' missing required fields: {missing}. "
+                    f"Got: {list(dim.keys())}"
                 )
             return dim
 

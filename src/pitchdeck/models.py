@@ -155,7 +155,7 @@ class DeckValidationResult(BaseModel):
     target_vc: str
     validated_at: str
     overall_score: int = Field(ge=0, le=100)
-    pass_threshold: int = 60
+    pass_threshold: int = Field(default=60, ge=0, le=100)
     dimension_scores: List[DimensionScore]
     slide_scores: List[SlideValidationScore]
     custom_check_results: List[CustomCheckResult]

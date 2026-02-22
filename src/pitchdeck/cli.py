@@ -35,7 +35,7 @@ def generate(
     ] = False,
     save_json: Annotated[
         str,
-        typer.Option("--json", help="Also save deck as JSON (for validation)"),
+        typer.Option("--json", help="Path for JSON output (default: replaces .md extension)"),
     ] = "",
 ):
     """Generate a pitch deck from company documents."""
@@ -44,7 +44,7 @@ def generate(
     from pitchdeck.engine.gaps import detect_gaps, fill_gaps_interactive
     from pitchdeck.engine.narrative import generate_deck
     from pitchdeck.engine.slides import get_slide_templates
-    from pitchdeck.models import CompanyProfile
+    from pitchdeck.models import CompanyProfile, PitchDeckError
     from pitchdeck.output import save_markdown
     from pitchdeck.parsers import extract_document
     from pitchdeck.profiles import load_vc_profile
@@ -108,16 +108,23 @@ def generate(
 
     # 5. Generate deck
     console.print(f"\n[bold]Generating {len(templates)}-slide deck...[/bold]")
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        console=console,
-    ) as progress:
-        task = progress.add_task(
-            "Generating slides with Claude...", total=None
-        )
-        deck = generate_deck(company, vc_profile, templates)
-        progress.remove_task(task)
+    try:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task(
+                "Generating slides with Claude...", total=None
+            )
+            deck = generate_deck(company, vc_profile, templates)
+            progress.remove_task(task)
+    except PitchDeckError as e:
+        console.print(f"\n[red]Generation failed: {e}[/red]")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"\n[red]Unexpected error during generation: {type(e).__name__}: {e}[/red]")
+        raise typer.Exit(1)
 
     # 6. Save output
     save_markdown(deck, output)
@@ -135,8 +142,13 @@ def generate(
         console.print(f"  JSON: {json_path}")
     except OSError as e:
         console.print(
-            f"  [red]Warning: Failed to save JSON to {json_path}: {e}[/red]"
+            f"\n[bold red]Error: Failed to save JSON to {json_path}: {e}[/bold red]"
         )
+        console.print(
+            "[red]The deck was saved as Markdown but cannot be validated. "
+            "Check file permissions and disk space.[/red]"
+        )
+        raise typer.Exit(1)
 
     if deck.gaps_identified:
         console.print(
@@ -184,10 +196,8 @@ def validate(
     ] = False,
 ):
     """Score a pitch deck against VC-specific rubrics."""
-    import json as json_module
-
     from pitchdeck.engine.validator import validate_deck
-    from pitchdeck.models import PitchDeck, PitchDeckError
+    from pitchdeck.models import PitchDeck, PitchDeckError, ProfileNotFoundError
     from pitchdeck.output import save_validation_report
     from pitchdeck.profiles import load_vc_profile
 
@@ -229,8 +239,12 @@ def validate(
             f"  [green]OK[/green] {vc_profile.name} "
             f"({len(vc_profile.custom_checks)} custom checks)"
         )
+    except (ProfileNotFoundError, FileNotFoundError):
+        console.print(f"  [red]FAIL[/red] Profile '{vc}' not found.")
+        console.print("  Run [bold]pitchdeck profiles[/bold] to see available profiles.")
+        raise typer.Exit(1)
     except Exception as e:
-        console.print(f"  [red]FAIL[/red] {e}")
+        console.print(f"  [red]FAIL[/red] Could not load profile '{vc}': {e}")
         raise typer.Exit(1)
 
     # 3. Validate
@@ -267,20 +281,23 @@ def validate(
             result = validate_deck(
                 deck, vc_profile, threshold, skip_llm=True
             )
+    except PitchDeckError as e:
+        console.print(f"  [red]Validation failed: {e}[/red]")
+        raise typer.Exit(1)
     except Exception as e:
-        if "PitchDeckError" in type(e).__name__:
-            console.print(f"  [red]Validation failed: {e}[/red]")
-        else:
-            console.print(f"  [red]Unexpected error during validation: {e}[/red]")
+        console.print(f"  [red]Unexpected error during validation: {type(e).__name__}: {e}[/red]")
         raise typer.Exit(1)
 
     # 4. Save report
+    report_saved = False
     try:
         save_validation_report(result, output)
+        report_saved = True
     except OSError as e:
         console.print(
-            f"[red]Warning: Failed to save report to {output}: {e}[/red]"
+            f"\n[bold red]Error: Failed to save report to {output}: {e}[/bold red]"
         )
+        console.print("[red]Check disk space and directory permissions.[/red]")
 
     # 5. Print summary
     pass_fail = "[green]PASS[/green]" if result.pass_fail else "[red]FAIL[/red]"
@@ -302,7 +319,10 @@ def validate(
         for i, p in enumerate(result.improvement_priorities[:5], 1):
             console.print(f"  {i}. {p}")
 
-    console.print(f"\n[bold]Report saved to {output}[/bold]")
+    if report_saved:
+        console.print(f"\n[bold]Report saved to {output}[/bold]")
+    else:
+        console.print(f"\n[yellow]Report not saved (see error above).[/yellow]")
 
 
 if __name__ == "__main__":
