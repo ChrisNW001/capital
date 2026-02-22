@@ -35,7 +35,7 @@ def generate(
     ] = False,
     save_json: Annotated[
         str,
-        typer.Option("--json", help="Path for JSON output (default: replaces output file extension with .json)"),
+        typer.Option("--json", help="Path for JSON output (always saved; default: replaces .md with .json)"),
     ] = "",
 ):
     """Generate a pitch deck from company documents."""
@@ -332,8 +332,14 @@ def validate(
         console.print("[red]Check disk space and directory permissions.[/red]")
     except Exception as e:
         console.print(
-            f"\n[bold red]Error: Failed to save report to {output}: {type(e).__name__}: {e}[/bold red]"
+            f"\n[bold red]Error: Unexpected {type(e).__name__} while rendering/saving "
+            f"report to {output}: {e}[/bold red]"
         )
+        console.print(
+            "[red]This may be a bug in the report renderer. "
+            "Please report this issue.[/red]"
+        )
+        raise typer.Exit(1)
 
     # 5. Print summary
     pass_fail = "[green]PASS[/green]" if result.pass_fail else "[red]FAIL[/red]"

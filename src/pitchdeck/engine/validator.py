@@ -332,6 +332,11 @@ def _check_custom_checks(
             if len(overlap) >= 2:
                 passed = True
                 evidence = f"Weak match (word overlap): {', '.join(sorted(overlap)[:5])}"
+            else:
+                evidence = (
+                    f"No keyword match found. "
+                    f"Checked words: {', '.join(sorted(check_words)[:5])}"
+                )
 
         results.append(
             CustomCheckResult(
@@ -476,7 +481,9 @@ OUTPUT FORMAT (return ONLY this JSON):
             f"Anthropic API error (HTTP {e.status_code}): {e.message}"
         ) from e
     except Exception as e:
-        raise PitchDeckError(f"Unexpected error calling Claude API: {e}") from e
+        raise PitchDeckError(
+            f"Unexpected {type(e).__name__} calling Claude API: {e}"
+        ) from e
 
     return _parse_validation_response(response)
 

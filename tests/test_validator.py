@@ -315,7 +315,7 @@ class TestCheckCustomChecks:
         )
         results = _check_custom_checks(deck, profile)
         assert results[0].passed is False
-        assert results[0].evidence == ""
+        assert "No keyword match found" in results[0].evidence
 
 
 class TestValidateDeck:
