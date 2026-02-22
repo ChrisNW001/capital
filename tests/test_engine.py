@@ -273,3 +273,44 @@ class TestGenerateDeckAPIErrors:
                 )
                 with pytest.raises(PitchDeckError, match="API error"):
                     generate_deck(sample_company, sample_vc_profile, templates)
+
+    def test_unexpected_exception(self, sample_company, sample_vc_profile):
+        from pitchdeck.engine.narrative import generate_deck
+
+        templates = get_slide_templates(sample_vc_profile)
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.narrative.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    ConnectionError("Connection refused")
+                )
+                with pytest.raises(PitchDeckError, match="Unexpected ConnectionError"):
+                    generate_deck(sample_company, sample_vc_profile, templates)
+
+
+class TestParseDeckResponseEdgeCases:
+    def test_missing_slides_key_raises(self, sample_company, sample_vc_profile):
+        from pitchdeck.engine.narrative import _parse_deck_response
+
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text='{"narrative_arc": "test"}')]
+
+        with pytest.raises(PitchDeckError, match="missing 'slides' key"):
+            _parse_deck_response(mock_response, sample_company, sample_vc_profile)
+
+    def test_empty_slides_list_raises(self, sample_company, sample_vc_profile):
+        from pitchdeck.engine.narrative import _parse_deck_response
+
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text='{"slides": []}')]
+
+        with pytest.raises(PitchDeckError, match="missing 'slides' key"):
+            _parse_deck_response(mock_response, sample_company, sample_vc_profile)
+
+    def test_malformed_json_includes_snippet(self, sample_company, sample_vc_profile):
+        from pitchdeck.engine.narrative import _parse_deck_response
+
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text='{not valid json}')]
+
+        with pytest.raises(PitchDeckError, match="Extracted text starts with"):
+            _parse_deck_response(mock_response, sample_company, sample_vc_profile)

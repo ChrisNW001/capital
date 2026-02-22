@@ -128,6 +128,10 @@ Generate ALL {len(slide_templates)} slides in order. Return ONLY the JSON object
         raise PitchDeckError(
             f"Anthropic API error (HTTP {e.status_code}): {e.message}"
         ) from e
+    except Exception as e:
+        raise PitchDeckError(
+            f"Unexpected {type(e).__name__} calling Claude API: {e}"
+        ) from e
 
     return _parse_deck_response(response, company, vc_profile)
 
@@ -213,10 +217,22 @@ def _parse_deck_response(
     try:
         data = json.loads(json_match.group())
     except json.JSONDecodeError as e:
-        raise PitchDeckError(f"Failed to parse deck JSON: {e}") from e
+        extracted = json_match.group()
+        snippet = extracted[:200] + ("..." if len(extracted) > 200 else "")
+        raise PitchDeckError(
+            f"Failed to parse deck JSON: {e}. "
+            f"Extracted text starts with: {snippet}"
+        ) from e
+
+    raw_slides = data.get("slides")
+    if not raw_slides:
+        raise PitchDeckError(
+            f"Claude response is missing 'slides' key or returned an empty slide list. "
+            f"Top-level keys in response: {list(data.keys())}"
+        )
 
     slides = []
-    for slide_data in data.get("slides", []):
+    for slide_data in raw_slides:
         slides.append(
             SlideContent(
                 slide_number=slide_data.get("slide_number", len(slides) + 1),
