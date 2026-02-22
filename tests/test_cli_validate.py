@@ -1,0 +1,121 @@
+"""Tests for the validate CLI command."""
+
+from unittest.mock import patch
+
+import pytest
+from typer.testing import CliRunner
+
+from pitchdeck.cli import app
+
+runner = CliRunner()
+
+
+class TestValidateCLIFileHandling:
+    def test_file_not_found_exits_1(self):
+        result = runner.invoke(
+            app, ["validate", "nonexistent.json", "--skip-llm"]
+        )
+        assert result.exit_code == 1
+        assert "File not found" in result.output
+
+    def test_invalid_json_schema_exits_1(self, tmp_path):
+        bad_json = tmp_path / "bad.json"
+        bad_json.write_text('{"company_name": "X"}')
+        result = runner.invoke(
+            app, ["validate", str(bad_json), "--skip-llm"]
+        )
+        assert result.exit_code == 1
+        assert "Invalid deck JSON schema" in result.output
+
+    def test_corrupted_file_exits_1(self, tmp_path):
+        bad_file = tmp_path / "corrupt.json"
+        bad_file.write_text("not json at all {{{")
+        result = runner.invoke(
+            app, ["validate", str(bad_file), "--skip-llm"]
+        )
+        assert result.exit_code == 1
+        assert "FAIL" in result.output
+
+
+class TestValidateCLIApiKey:
+    def test_missing_api_key_without_skip_llm_exits_1(
+        self, sample_deck_json
+    ):
+        with patch.dict("os.environ", {}, clear=True):
+            result = runner.invoke(
+                app, ["validate", str(sample_deck_json)]
+            )
+        assert result.exit_code == 1
+        assert "ANTHROPIC_API_KEY" in result.output
+
+
+class TestValidateCLIRuleBased:
+    def test_skip_llm_succeeds(self, sample_deck_json, tmp_path):
+        report_path = tmp_path / "report.md"
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--output", str(report_path),
+        ])
+        assert result.exit_code == 0
+        assert "Overall Score" in result.output
+        assert report_path.exists()
+
+    def test_skip_llm_prints_pass_or_fail(self, sample_deck_json, tmp_path):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--output", str(tmp_path / "report.md"),
+        ])
+        assert result.exit_code == 0
+        assert "PASS" in result.output or "FAIL" in result.output
+
+    def test_custom_threshold(self, sample_deck_json, tmp_path):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--threshold", "95",
+            "--output", str(tmp_path / "report.md"),
+        ])
+        assert result.exit_code == 0
+        # A 95 threshold on a synthetic deck should produce FAIL
+        assert "FAIL" in result.output
+
+    def test_vc_checks_shown(self, sample_deck_json, tmp_path):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--output", str(tmp_path / "report.md"),
+        ])
+        assert result.exit_code == 0
+        assert "VC Checks" in result.output
+
+    def test_improvements_shown(self, sample_deck_json, tmp_path):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--output", str(tmp_path / "report.md"),
+        ])
+        assert result.exit_code == 0
+        assert "Top Improvements" in result.output
+
+    def test_report_saved_message(self, sample_deck_json, tmp_path):
+        report_path = tmp_path / "report.md"
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--output", str(report_path),
+        ])
+        assert result.exit_code == 0
+        assert "Report saved to" in result.output
+
+
+class TestValidateCLIProfileErrors:
+    def test_unknown_profile_exits_1(self, sample_deck_json):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--vc", "nonexistent-vc-profile",
+            "--skip-llm",
+        ])
+        assert result.exit_code == 1
+        assert "not found" in result.output

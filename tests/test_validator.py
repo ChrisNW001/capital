@@ -1,5 +1,7 @@
 """Tests for the deck validation engine."""
 
+import json
+
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -8,17 +10,21 @@ from pitchdeck.engine.slides import SLIDE_TEMPLATES
 from pitchdeck.engine.validator import (
     _check_custom_checks,
     _get_template_for_slide,
+    _parse_validation_response,
     _score_completeness,
     _score_metrics_density,
     _score_slide_rules,
     validate_deck,
 )
 from pitchdeck.models import (
+    DeckPreferences,
     DeckValidationResult,
     DimensionScore,
+    PitchDeck,
     PitchDeckError,
     SlideContent,
     SlideValidationScore,
+    VCProfile,
 )
 
 
@@ -103,6 +109,32 @@ class TestScoreSlideRules:
         )
         score = _score_slide_rules(slide)
         assert any("Missing speaker notes" in i for i in score.issues)
+
+    def test_exceeds_word_limit_flagged(self):
+        long_bullet = " ".join(["word"] * 120)
+        slide = SlideContent(
+            slide_number=2,
+            slide_type="executive-summary",
+            title="Title",
+            headline="Headline",
+            bullets=[long_bullet],
+            speaker_notes="Notes",
+        )
+        score = _score_slide_rules(slide)
+        assert any("Exceeds word limit" in i for i in score.issues)
+        assert score.score <= 90
+
+    def test_no_bullets_on_expected_slide_flagged(self):
+        slide = SlideContent(
+            slide_number=2,
+            slide_type="executive-summary",
+            title="Title",
+            headline="Headline",
+            bullets=[],
+            speaker_notes="Notes",
+        )
+        score = _score_slide_rules(slide)
+        assert any("No bullet points" in i for i in score.issues)
 
     def test_score_never_below_zero(self):
         slide = SlideContent(
@@ -214,8 +246,6 @@ class TestCheckCustomChecks:
         assert len(results) == 1
 
     def test_fails_when_keywords_absent(self, sample_vc_profile):
-        from pitchdeck.models import PitchDeck
-
         deck = PitchDeck(
             company_name="Test",
             target_vc="VC",
@@ -233,9 +263,47 @@ class TestCheckCustomChecks:
             narrative_arc="Arc",
         )
         results = _check_custom_checks(deck, sample_vc_profile)
-        # With minimal content, most checks should fail
-        for r in results:
-            assert isinstance(r.passed, bool)
+        assert len(results) == 1
+        assert results[0].passed is False
+
+    def test_fallback_overlap_passes_with_sufficient_match(self):
+        profile = VCProfile(
+            name="VC", fund_name="F", stage_focus=["seed"],
+            sector_focus=["ai"], geo_focus=["EU"], thesis_points=["x"],
+            custom_checks=["show strong revenue growth trajectory"],
+        )
+        deck = PitchDeck(
+            company_name="X", target_vc="VC", generated_at="2026-01-01",
+            slides=[SlideContent(
+                slide_number=1, slide_type="cover",
+                title="Strong revenue", headline="Exceptional growth trajectory",
+                bullets=["Revenue growing strongly"],
+                speaker_notes="Notes",
+            )],
+            narrative_arc="arc",
+        )
+        results = _check_custom_checks(deck, profile)
+        assert results[0].passed is True
+        assert "Content overlap" in results[0].evidence
+
+    def test_fallback_overlap_fails_with_no_match(self):
+        profile = VCProfile(
+            name="VC", fund_name="F", stage_focus=["seed"],
+            sector_focus=["ai"], geo_focus=["EU"], thesis_points=["x"],
+            custom_checks=["show strong revenue growth trajectory"],
+        )
+        deck = PitchDeck(
+            company_name="X", target_vc="VC", generated_at="2026-01-01",
+            slides=[SlideContent(
+                slide_number=1, slide_type="cover",
+                title="Hello", headline="World",
+                bullets=[], speaker_notes="Notes",
+            )],
+            narrative_arc="arc",
+        )
+        results = _check_custom_checks(deck, profile)
+        assert results[0].passed is False
+        assert results[0].evidence == ""
 
 
 class TestValidateDeck:
@@ -364,6 +432,120 @@ class TestValidateDeck:
         mock_response.content = [MagicMock(text="Not valid JSON")]
         with pytest.raises(PitchDeckError, match="no JSON found"):
             _parse_validation_response(mock_response)
+
+
+class TestParseValidationResponse:
+    def test_empty_response_raises(self):
+        mock_response = MagicMock()
+        mock_response.content = []
+        with pytest.raises(PitchDeckError, match="empty response"):
+            _parse_validation_response(mock_response)
+
+    def test_non_text_block_raises(self):
+        mock_response = MagicMock()
+        block = MagicMock(spec=[])  # no .text attribute
+        mock_response.content = [block]
+        with pytest.raises(PitchDeckError, match="expected text block"):
+            _parse_validation_response(mock_response)
+
+    def test_no_json_raises(self):
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text="Not valid JSON")]
+        with pytest.raises(PitchDeckError, match="no JSON found"):
+            _parse_validation_response(mock_response)
+
+
+class TestExtractDimensionErrors:
+    """Test _extract_dimension error paths via validate_deck with malformed LLM responses."""
+
+    def _make_mock_response(self, text):
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text=text)]
+        return mock_response
+
+    def test_missing_dimension_key_raises(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        bad_json = json.dumps({
+            "thesis_alignment": {"score": 60, "rationale": "ok"},
+            "common_mistakes": {"score": 70, "rationale": "ok"},
+            "slide_quality": [], "top_strengths": [],
+            "critical_gaps": [], "recommendation": "",
+        })
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.return_value = (
+                    self._make_mock_response(bad_json)
+                )
+                with pytest.raises(PitchDeckError, match="narrative_coherence"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+    def test_non_dict_dimension_raises(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        bad_json = json.dumps({
+            "narrative_coherence": None,
+            "thesis_alignment": {"score": 60, "rationale": "ok"},
+            "common_mistakes": {"score": 70, "rationale": "ok"},
+            "slide_quality": [], "top_strengths": [],
+            "critical_gaps": [], "recommendation": "",
+        })
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.return_value = (
+                    self._make_mock_response(bad_json)
+                )
+                with pytest.raises(PitchDeckError, match="missing or malformed"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+    def test_missing_score_field_raises(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        bad_json = json.dumps({
+            "narrative_coherence": {"rationale": "no score here"},
+            "thesis_alignment": {"score": 60, "rationale": "ok"},
+            "common_mistakes": {"score": 70, "rationale": "ok"},
+            "slide_quality": [], "top_strengths": [],
+            "critical_gaps": [], "recommendation": "",
+        })
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.return_value = (
+                    self._make_mock_response(bad_json)
+                )
+                with pytest.raises(PitchDeckError, match="missing required fields"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+
+class TestScoreCompletenessPartialMatch:
+    def test_missing_required_slide_types_recorded(self, sample_vc_profile):
+        deck = PitchDeck(
+            company_name="Test", target_vc="VC", generated_at="2026-01-01",
+            slides=[
+                SlideContent(
+                    slide_number=1, slide_type="cover", title="T",
+                    headline="H", bullets=[], speaker_notes="Notes",
+                ),
+                SlideContent(
+                    slide_number=2, slide_type="problem", title="T",
+                    headline="H", bullets=[], speaker_notes="Notes",
+                ),
+            ],
+            narrative_arc="",
+        )
+        score = _score_completeness(deck, sample_vc_profile)
+        missing_text = " ".join(score.evidence_missing)
+        assert "traction" in missing_text
+        assert "the-ask" in missing_text
 
 
 class TestDimensionScoreBounds:
