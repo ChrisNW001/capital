@@ -254,7 +254,7 @@ def validate(
         console.print("  [dim]Hint: use the .json file produced by 'pitchdeck generate', not the .md file.[/dim]")
         raise typer.Exit(1)
     except Exception as e:
-        console.print(f"  [red]FAIL[/red] Cannot parse deck JSON: {e}")
+        console.print(f"  [red]FAIL[/red] Cannot parse deck JSON: {type(e).__name__}: {e}")
         raise typer.Exit(1)
 
     # 2. Load VC profile
@@ -321,15 +321,14 @@ def validate(
         raise typer.Exit(1)
 
     # 4. Save report
-    report_saved = False
     try:
         save_validation_report(result, output)
-        report_saved = True
     except OSError as e:
         console.print(
             f"\n[bold red]Error: Failed to save report to {output}: {e}[/bold red]"
         )
         console.print("[red]Check disk space and directory permissions.[/red]")
+        raise typer.Exit(1)
     except Exception as e:
         console.print(
             f"\n[bold red]Error: Unexpected {type(e).__name__} while rendering/saving "
@@ -361,11 +360,7 @@ def validate(
         for i, p in enumerate(result.improvement_priorities[:5], 1):
             console.print(f"  {i}. {p}")
 
-    if report_saved:
-        console.print(f"\n[bold]Report saved to {output}[/bold]")
-    else:
-        console.print(f"\n[bold red]Report not saved — see error above.[/bold red]")
-        raise typer.Exit(1)
+    console.print(f"\n[bold]Report saved to {output}[/bold]")
 
 
 if __name__ == "__main__":
