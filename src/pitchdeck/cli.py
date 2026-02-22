@@ -129,9 +129,14 @@ def generate(
         json_path = save_json
     else:
         json_path = output.rsplit(".", 1)[0] + ".json"
-    with open(json_path, "w") as f:
-        f.write(deck.model_dump_json(indent=2))
-    console.print(f"  JSON: {json_path}")
+    try:
+        with open(json_path, "w") as f:
+            f.write(deck.model_dump_json(indent=2))
+        console.print(f"  JSON: {json_path}")
+    except OSError as e:
+        console.print(
+            f"  [red]Warning: Failed to save JSON to {json_path}: {e}[/red]"
+        )
 
     if deck.gaps_identified:
         console.print(
@@ -191,16 +196,29 @@ def validate(
     try:
         with open(deck_file) as f:
             deck_data = f.read()
+    except FileNotFoundError:
+        console.print(f"  [red]FAIL[/red] File not found: {deck_file}")
+        raise typer.Exit(1)
+    except OSError as e:
+        console.print(f"  [red]FAIL[/red] Cannot read file: {e}")
+        raise typer.Exit(1)
+
+    from pydantic import ValidationError
+
+    try:
         deck = PitchDeck.model_validate_json(deck_data)
         console.print(
             f"  [green]OK[/green] {deck.company_name} "
             f"({len(deck.slides)} slides)"
         )
-    except FileNotFoundError:
-        console.print(f"  [red]FAIL[/red] File not found: {deck_file}")
+    except ValidationError as e:
+        console.print(f"  [red]FAIL[/red] Invalid deck JSON schema:")
+        for err in e.errors()[:5]:
+            loc = " > ".join(str(l) for l in err["loc"])
+            console.print(f"    {loc}: {err['msg']}")
         raise typer.Exit(1)
     except Exception as e:
-        console.print(f"  [red]FAIL[/red] {e}")
+        console.print(f"  [red]FAIL[/red] Cannot parse deck JSON: {e}")
         raise typer.Exit(1)
 
     # 2. Load VC profile
@@ -216,45 +234,53 @@ def validate(
         raise typer.Exit(1)
 
     # 3. Validate
-    if skip_llm:
-        console.print(
-            "\n[bold]Running rule-based validation...[/bold]"
-        )
-    else:
+    if not skip_llm:
         import os
 
         if not os.environ.get("ANTHROPIC_API_KEY"):
             console.print(
-                "[yellow]Warning: ANTHROPIC_API_KEY not set. "
-                "Running rule-based only.[/yellow]"
+                "[red]Error: ANTHROPIC_API_KEY not set. "
+                "Use --skip-llm for rule-based scoring only.[/red]"
             )
-            skip_llm = True
+            raise typer.Exit(1)
 
-    if not skip_llm:
-        with Progress(
-            SpinnerColumn(),
-            TextColumn(
-                "[progress.description]{task.description}"
-            ),
-            console=console,
-        ) as progress:
-            task = progress.add_task(
-                "Scoring deck with Claude...", total=None
+    try:
+        if not skip_llm:
+            with Progress(
+                SpinnerColumn(),
+                TextColumn(
+                    "[progress.description]{task.description}"
+                ),
+                console=console,
+            ) as progress:
+                task = progress.add_task(
+                    "Scoring deck with Claude...", total=None
+                )
+                result = validate_deck(
+                    deck, vc_profile, threshold, skip_llm
+                )
+                progress.remove_task(task)
+        else:
+            console.print(
+                "\n[bold]Running rule-based validation (--skip-llm)...[/bold]"
             )
             result = validate_deck(
-                deck, vc_profile, threshold, skip_llm
+                deck, vc_profile, threshold, skip_llm=True
             )
-            progress.remove_task(task)
-    else:
-        console.print(
-            "\n[bold]Running rule-based validation...[/bold]"
-        )
-        result = validate_deck(
-            deck, vc_profile, threshold, skip_llm=True
-        )
+    except Exception as e:
+        if "PitchDeckError" in type(e).__name__:
+            console.print(f"  [red]Validation failed: {e}[/red]")
+        else:
+            console.print(f"  [red]Unexpected error during validation: {e}[/red]")
+        raise typer.Exit(1)
 
     # 4. Save report
-    save_validation_report(result, output)
+    try:
+        save_validation_report(result, output)
+    except OSError as e:
+        console.print(
+            f"[red]Warning: Failed to save report to {output}: {e}[/red]"
+        )
 
     # 5. Print summary
     pass_fail = "[green]PASS[/green]" if result.pass_fail else "[red]FAIL[/red]"

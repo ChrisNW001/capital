@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 class PitchDeckError(Exception):
@@ -130,7 +130,7 @@ class GapQuestion(BaseModel):
 class DimensionScore(BaseModel):
     dimension: str  # "completeness", "metrics_density", "narrative_coherence", "thesis_alignment", "common_mistakes"
     score: int = Field(ge=0, le=100)
-    weight: float  # 0.0-1.0
+    weight: float = Field(ge=0.0, le=1.0)
     rationale: str
     evidence_found: List[str] = Field(default_factory=list)
     evidence_missing: List[str] = Field(default_factory=list)
@@ -156,7 +156,6 @@ class DeckValidationResult(BaseModel):
     validated_at: str
     overall_score: int = Field(ge=0, le=100)
     pass_threshold: int = 60
-    pass_fail: bool
     dimension_scores: List[DimensionScore]
     slide_scores: List[SlideValidationScore]
     custom_check_results: List[CustomCheckResult]
@@ -164,3 +163,8 @@ class DeckValidationResult(BaseModel):
     critical_gaps: List[str]
     improvement_priorities: List[str]  # ordered by impact
     recommendation: str
+
+    @computed_field
+    @property
+    def pass_fail(self) -> bool:
+        return self.overall_score >= self.pass_threshold

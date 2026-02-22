@@ -235,21 +235,29 @@ def _score_metrics_density(
             total_expected += len(template.metrics_needed)
 
     coverage = total_metrics / max(total_expected, 1)
-    emphasis_found = len(evidence_found) - 1  # subtract the total count entry
-    emphasis_total = len(emphasis) if emphasis else 1
-    emphasis_coverage = emphasis_found / max(emphasis_total, 1)
-
-    score = int(((coverage * 0.5) + (emphasis_coverage * 0.5)) * 100)
+    if emphasis:
+        emphasis_found = len(evidence_found) - 1  # subtract the total count entry
+        emphasis_total = len(emphasis)
+        emphasis_coverage = emphasis_found / emphasis_total
+        score = int(((coverage * 0.5) + (emphasis_coverage * 0.5)) * 100)
+        rationale = (
+            f"{total_metrics} metrics found "
+            f"(~{total_expected} expected from templates). "
+            f"{emphasis_found}/{emphasis_total} VC emphasis metrics addressed."
+        )
+    else:
+        # No VC emphasis configured — score based on template coverage only
+        score = int(coverage * 100)
+        rationale = (
+            f"{total_metrics} metrics found "
+            f"(~{total_expected} expected from templates)."
+        )
 
     return DimensionScore(
         dimension="metrics_density",
         score=max(0, min(100, score)),
         weight=0.20,
-        rationale=(
-            f"{total_metrics} metrics found "
-            f"(~{total_expected} expected from templates). "
-            f"{emphasis_found}/{emphasis_total} VC emphasis metrics addressed."
-        ),
+        rationale=rationale,
         evidence_found=evidence_found,
         evidence_missing=evidence_missing,
     )
@@ -287,14 +295,17 @@ def _check_custom_checks(
         evidence = ""
 
         # Try keyword matching
+        matched_pattern = False
         for pattern, keywords in keyword_map.items():
             if pattern in check_lower:
+                matched_pattern = True
                 matches = [kw for kw in keywords if kw in all_content]
                 if matches:
                     passed = True
                     evidence = f"Keywords found: {', '.join(matches)}"
                 break
-        else:
+
+        if not matched_pattern:
             # Fallback: simple word overlap
             check_words = {
                 w for w in check_lower.split() if len(w) > 3
@@ -419,13 +430,16 @@ OUTPUT FORMAT (return ONLY this JSON):
     "recommendation": "<one paragraph>"
 }}"""
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=8192,
-        temperature=0.0,
-        system=system_messages,
-        messages=[{"role": "user", "content": user_prompt}],
-    )
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=8192,
+            temperature=0.0,
+            system=system_messages,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+    except Exception as e:
+        raise PitchDeckError(f"Claude API call failed: {e}") from e
 
     return _parse_validation_response(response)
 
@@ -544,29 +558,45 @@ def validate_deck(
         )
         llm_data = _score_qualitative(deck, vc_profile, rule_summary)
 
+        def _extract_dimension(data: dict, key: str) -> dict:
+            """Safely extract a dimension dict from LLM response."""
+            dim = data.get(key)
+            if not isinstance(dim, dict):
+                raise PitchDeckError(
+                    f"LLM response missing or malformed '{key}' dimension"
+                )
+            if "score" not in dim or "rationale" not in dim:
+                raise PitchDeckError(
+                    f"LLM response '{key}' missing required 'score' or 'rationale'"
+                )
+            return dim
+
+        nc = _extract_dimension(llm_data, "narrative_coherence")
         narrative = DimensionScore(
             dimension="narrative_coherence",
-            score=max(0, min(100, llm_data["narrative_coherence"]["score"])),
+            score=max(0, min(100, nc["score"])),
             weight=0.20,
-            rationale=llm_data["narrative_coherence"]["rationale"],
-            evidence_found=llm_data["narrative_coherence"].get("evidence_found", []),
-            evidence_missing=llm_data["narrative_coherence"].get("evidence_missing", []),
+            rationale=nc["rationale"],
+            evidence_found=nc.get("evidence_found", []),
+            evidence_missing=nc.get("evidence_missing", []),
         )
+        ta = _extract_dimension(llm_data, "thesis_alignment")
         alignment = DimensionScore(
             dimension="thesis_alignment",
-            score=max(0, min(100, llm_data["thesis_alignment"]["score"])),
+            score=max(0, min(100, ta["score"])),
             weight=0.20,
-            rationale=llm_data["thesis_alignment"]["rationale"],
-            evidence_found=llm_data["thesis_alignment"].get("evidence_found", []),
-            evidence_missing=llm_data["thesis_alignment"].get("evidence_missing", []),
+            rationale=ta["rationale"],
+            evidence_found=ta.get("evidence_found", []),
+            evidence_missing=ta.get("evidence_missing", []),
         )
+        cm = _extract_dimension(llm_data, "common_mistakes")
         mistakes = DimensionScore(
             dimension="common_mistakes",
-            score=max(0, min(100, llm_data["common_mistakes"]["score"])),
+            score=max(0, min(100, cm["score"])),
             weight=0.15,
-            rationale=llm_data["common_mistakes"]["rationale"],
-            evidence_found=llm_data["common_mistakes"].get("evidence_found", []),
-            evidence_missing=llm_data["common_mistakes"].get("evidence_missing", []),
+            rationale=cm["rationale"],
+            evidence_found=cm.get("evidence_found", []),
+            evidence_missing=cm.get("evidence_missing", []),
         )
 
         # Merge LLM per-slide quality notes into existing slide scores
@@ -582,23 +612,32 @@ def validate_deck(
         critical_gaps = llm_data.get("critical_gaps", [])
         recommendation = llm_data.get("recommendation", "")
     else:
-        # Placeholder LLM dimensions when skipped
+        # When LLM is skipped, rescale rule-based weights to sum to 1.0
+        # so rule-based mode can still produce meaningful scores
+        rule_weight_sum = completeness.weight + metrics_density.weight  # 0.45
+        completeness = completeness.model_copy(
+            update={"weight": completeness.weight / rule_weight_sum}
+        )
+        metrics_density = metrics_density.model_copy(
+            update={"weight": metrics_density.weight / rule_weight_sum}
+        )
+
         narrative = DimensionScore(
             dimension="narrative_coherence",
             score=0,
-            weight=0.20,
+            weight=0.0,
             rationale="LLM scoring skipped",
         )
         alignment = DimensionScore(
             dimension="thesis_alignment",
             score=0,
-            weight=0.20,
+            weight=0.0,
             rationale="LLM scoring skipped",
         )
         mistakes = DimensionScore(
             dimension="common_mistakes",
             score=0,
-            weight=0.15,
+            weight=0.0,
             rationale="LLM scoring skipped",
         )
         top_strengths = []
@@ -624,7 +663,6 @@ def validate_deck(
         validated_at=datetime.now().isoformat(),
         overall_score=max(0, min(100, overall_score)),
         pass_threshold=pass_threshold,
-        pass_fail=overall_score >= pass_threshold,
         dimension_scores=dimension_scores,
         slide_scores=slide_scores,
         custom_check_results=custom_check_results,

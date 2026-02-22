@@ -191,7 +191,6 @@ def sample_validation_result():
         validated_at="2026-02-19T12:00:00",
         overall_score=73,
         pass_threshold=60,
-        pass_fail=True,
         dimension_scores=[
             DimensionScore(
                 dimension="completeness",

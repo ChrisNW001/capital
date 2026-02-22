@@ -146,7 +146,10 @@ def render_validation_report(result: DeckValidationResult) -> str:
 def save_validation_report(
     result: DeckValidationResult, path: str
 ) -> None:
-    """Save validation report as Markdown file."""
+    """Save validation report as Markdown file.
+
+    Raises OSError if the file cannot be written.
+    """
     content = render_validation_report(result)
     with open(path, "w") as f:
         f.write(content)
