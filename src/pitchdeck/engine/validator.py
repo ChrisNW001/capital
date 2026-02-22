@@ -143,7 +143,10 @@ def _score_slide_rules(slide: SlideContent) -> SlideValidationScore:
 
 
 def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScore:
-    """Score deck completeness: slide count vs preferred, required slide type coverage, and speaker notes presence."""
+    """Score deck completeness: slide count vs preferred, required slide type coverage, and speaker notes presence.
+
+    Note: gaps_identified is recorded in evidence_missing but does not affect the score axes.
+    """
     evidence_found = []
     evidence_missing = []
 
@@ -273,7 +276,12 @@ def _score_metrics_density(
 def _check_custom_checks(
     deck: PitchDeck, vc_profile: VCProfile
 ) -> List[CustomCheckResult]:
-    """Evaluate VC-specific custom checks via keyword matching."""
+    """Evaluate VC-specific custom checks via keyword matching.
+
+    Uses a hardcoded keyword_map for known check patterns. Falls back to
+    word-overlap heuristic (>=2 matching words longer than 3 chars) for
+    checks that don't match any known pattern.
+    """
     results = []
     all_content = " ".join(
         " ".join(
@@ -355,8 +363,14 @@ def _score_qualitative(
 ) -> dict:
     """Use Claude to score narrative coherence, thesis alignment, and common mistakes.
 
-    Returns dict with keys: narrative_coherence, thesis_alignment, common_mistakes,
-    slide_quality (list), top_strengths, critical_gaps, recommendation.
+    Returns dict with keys:
+        Required (raise PitchDeckError if missing):
+            narrative_coherence, thesis_alignment, common_mistakes —
+            each a dict with "score" (int) and "rationale" (str).
+        Optional (.get() with defaults):
+            slide_quality (list of {slide_number, quality_note}),
+            top_strengths (list[str]), critical_gaps (list[str]),
+            recommendation (str).
     """
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
@@ -572,6 +586,8 @@ def validate_deck(
         vc_profile: VC profile with thesis points and custom checks.
         pass_threshold: Score threshold for pass/fail (0-100).
         skip_llm: If True, skip LLM scoring (rule-based only).
+            When True, LLM dimension weights are set to 0.0 and
+            rule-based dimension weights are rescaled to sum to 1.0.
 
     Returns:
         DeckValidationResult with dimension scores, per-slide scores,
@@ -609,6 +625,12 @@ def validate_deck(
                     f"LLM response '{key}' missing required fields: {missing}. "
                     f"Got: {list(dim.keys())}"
                 )
+            try:
+                dim["score"] = int(dim["score"])
+            except (TypeError, ValueError) as e:
+                raise PitchDeckError(
+                    f"LLM response '{key}' has non-numeric score: {dim['score']!r}"
+                ) from e
             return dim
 
         nc = _extract_dimension(llm_data, "narrative_coherence")
@@ -690,9 +712,12 @@ def validate_deck(
         completeness, metrics_density, narrative, alignment, mistakes
     ]
 
-    # 5. Calculate weighted overall score
-    overall = sum(d.score * d.weight for d in dimension_scores)
-    overall_score = int(round(overall))
+    # 5. Verify dimension weights sum to ~1.0
+    weight_sum = sum(d.weight for d in dimension_scores)
+    if abs(weight_sum - 1.0) > 0.01:
+        raise PitchDeckError(
+            f"Dimension weights must sum to ~1.0, got {weight_sum:.3f}"
+        )
 
     # 6. Build improvement priorities from all issues
     improvement_priorities = _build_improvement_priorities(
@@ -703,7 +728,6 @@ def validate_deck(
         deck_name=deck.company_name,
         target_vc=deck.target_vc,
         validated_at=datetime.now().isoformat(),
-        overall_score=max(0, min(100, overall_score)),
         pass_threshold=pass_threshold,
         dimension_scores=dimension_scores,
         slide_scores=slide_scores,

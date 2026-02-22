@@ -189,7 +189,6 @@ def sample_validation_result():
         deck_name="Neurawork",
         target_vc="Test VC",
         validated_at="2026-02-19T12:00:00",
-        overall_score=73,
         pass_threshold=60,
         dimension_scores=[
             DimensionScore(

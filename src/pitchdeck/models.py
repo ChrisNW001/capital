@@ -1,6 +1,6 @@
 """Pydantic data models for the pitch deck generator."""
 
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, computed_field
 
@@ -127,8 +127,17 @@ class GapQuestion(BaseModel):
     choices: List[str] = Field(default_factory=list)
 
 
+DimensionName = Literal[
+    "completeness",
+    "metrics_density",
+    "narrative_coherence",
+    "thesis_alignment",
+    "common_mistakes",
+]
+
+
 class DimensionScore(BaseModel):
-    dimension: str  # "completeness", "metrics_density", "narrative_coherence", "thesis_alignment", "common_mistakes"
+    dimension: DimensionName
     score: int = Field(ge=0, le=100)
     weight: float = Field(ge=0.0, le=1.0)
     rationale: str
@@ -137,7 +146,7 @@ class DimensionScore(BaseModel):
 
 
 class SlideValidationScore(BaseModel):
-    slide_number: int
+    slide_number: int = Field(ge=1)
     slide_type: str
     score: int = Field(ge=0, le=100)
     issues: List[str] = Field(default_factory=list)
@@ -154,7 +163,6 @@ class DeckValidationResult(BaseModel):
     deck_name: str
     target_vc: str
     validated_at: str
-    overall_score: int = Field(ge=0, le=100)
     pass_threshold: int = Field(default=60, ge=0, le=100)
     dimension_scores: List[DimensionScore]
     slide_scores: List[SlideValidationScore]
@@ -163,6 +171,14 @@ class DeckValidationResult(BaseModel):
     critical_gaps: List[str] = Field(default_factory=list)
     improvement_priorities: List[str] = Field(default_factory=list)  # ordered by impact
     recommendation: str
+
+    @computed_field
+    @property
+    def overall_score(self) -> int:
+        if not self.dimension_scores:
+            return 0
+        raw = sum(d.score * d.weight for d in self.dimension_scores)
+        return max(0, min(100, int(round(raw))))
 
     @computed_field
     @property

@@ -428,6 +428,9 @@ class TestValidateDeck:
         assert dims["common_mistakes"].score == 80
         assert "Revenue traction" in result.top_strengths
         assert "Missing NDR" in result.critical_gaps
+        # Verify LLM slide quality notes are merged into slide suggestions
+        slide_1 = next(s for s in result.slide_scores if s.slide_number == 1)
+        assert "Strong opener" in slide_1.suggestions
 
     def test_parse_validation_response_invalid_json(self):
         from pitchdeck.engine.validator import _parse_validation_response
@@ -555,10 +558,10 @@ class TestScoreCompletenessPartialMatch:
 class TestDimensionScoreBounds:
     def test_score_at_boundaries(self):
         low = DimensionScore(
-            dimension="test", score=0, weight=0.2, rationale="Low"
+            dimension="completeness", score=0, weight=0.2, rationale="Low"
         )
         high = DimensionScore(
-            dimension="test", score=100, weight=0.2, rationale="High"
+            dimension="completeness", score=100, weight=0.2, rationale="High"
         )
         assert low.score == 0
         assert high.score == 100
@@ -568,14 +571,14 @@ class TestDimensionScoreBounds:
 
         with pytest.raises(ValidationError):
             DimensionScore(
-                dimension="test",
+                dimension="completeness",
                 score=150,
                 weight=0.2,
                 rationale="Too high",
             )
         with pytest.raises(ValidationError):
             DimensionScore(
-                dimension="test",
+                dimension="completeness",
                 score=-1,
                 weight=0.2,
                 rationale="Too low",
@@ -650,3 +653,129 @@ class TestParseValidationResponseSnippets:
         mock_response.content = [MagicMock(text="Just some plain text without braces")]
         with pytest.raises(PitchDeckError, match="Response starts with"):
             _parse_validation_response(mock_response)
+
+
+class TestScoreQualitativeAPIErrors:
+    """Test that API errors from _score_qualitative are wrapped as PitchDeckError."""
+
+    def test_authentication_error_raises_pitchdeckerror(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        from anthropic import AuthenticationError
+
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "bad-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    AuthenticationError(
+                        message="Invalid API key",
+                        response=MagicMock(status_code=401),
+                        body=None,
+                    )
+                )
+                with pytest.raises(PitchDeckError, match="Invalid API key"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+    def test_rate_limit_error_raises_pitchdeckerror(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        from anthropic import RateLimitError
+
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    RateLimitError(
+                        message="Rate limit exceeded",
+                        response=MagicMock(status_code=429),
+                        body=None,
+                    )
+                )
+                with pytest.raises(PitchDeckError, match="rate limit"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+    def test_timeout_error_raises_pitchdeckerror(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        from anthropic import APITimeoutError
+
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    APITimeoutError(request=MagicMock())
+                )
+                with pytest.raises(PitchDeckError, match="timed out"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+    def test_api_status_error_raises_pitchdeckerror(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        from anthropic import APIStatusError
+
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    APIStatusError(
+                        message="Internal server error",
+                        response=MagicMock(status_code=500),
+                        body=None,
+                    )
+                )
+                with pytest.raises(PitchDeckError, match="API error"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+
+class TestValidateDeckWeights:
+    def test_skip_llm_weights_sum_to_one(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        result = validate_deck(
+            sample_multi_slide_deck, sample_vc_profile, skip_llm=True
+        )
+        weight_sum = sum(d.weight for d in result.dimension_scores)
+        assert abs(weight_sum - 1.0) < 0.01
+
+    def test_skip_llm_overall_score_matches_weighted_sum(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        result = validate_deck(
+            sample_multi_slide_deck, sample_vc_profile, skip_llm=True
+        )
+        expected = sum(d.score * d.weight for d in result.dimension_scores)
+        assert result.overall_score == max(0, min(100, int(round(expected))))
+
+
+class TestScoreMetricsDensityEmphasis:
+    def test_emphasis_metric_found_in_content(self):
+        """When emphasis metric keyword appears in deck content, evidence_found includes 'Found:'."""
+        profile = VCProfile(
+            name="VC", fund_name="F", stage_focus=["seed"],
+            sector_focus=["ai"], geo_focus=["EU"], thesis_points=["x"],
+            deck_preferences=DeckPreferences(
+                preferred_slide_count=15,
+                metrics_emphasis=["Net Dollar Retention"],
+            ),
+        )
+        deck = PitchDeck(
+            company_name="Test", target_vc="VC", generated_at="2026-01-01",
+            slides=[SlideContent(
+                slide_number=1, slide_type="traction",
+                title="Traction", headline="Strong retention metrics",
+                bullets=["Net dollar retention above 120%"],
+                metrics=["NDR: 125%"],
+                speaker_notes="Notes",
+            )],
+            narrative_arc="arc",
+        )
+        score = _score_metrics_density(deck, profile)
+        assert any("Found:" in e for e in score.evidence_found)

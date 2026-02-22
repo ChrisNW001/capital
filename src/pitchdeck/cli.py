@@ -44,7 +44,7 @@ def generate(
     from pitchdeck.engine.gaps import detect_gaps, fill_gaps_interactive
     from pitchdeck.engine.narrative import generate_deck
     from pitchdeck.engine.slides import get_slide_templates
-    from pitchdeck.models import CompanyProfile, PitchDeckError
+    from pitchdeck.models import CompanyProfile, DocumentParseError, PitchDeckError, ProfileNotFoundError
     from pitchdeck.output import save_markdown
     from pitchdeck.parsers import extract_document
     from pitchdeck.profiles import load_vc_profile
@@ -66,8 +66,17 @@ def generate(
                 f"\n\n--- Document: {Path(path).name} ---\n\n{text}"
             )
             console.print(f"  [green]OK[/green] {path} ({len(text)} chars)")
-        except Exception as e:
+        except FileNotFoundError:
+            console.print(f"  [red]FAIL[/red] {path}: File not found")
+            raise typer.Exit(1)
+        except PermissionError:
+            console.print(f"  [red]FAIL[/red] {path}: Permission denied")
+            raise typer.Exit(1)
+        except DocumentParseError as e:
             console.print(f"  [red]FAIL[/red] {path}: {e}")
+            raise typer.Exit(1)
+        except Exception as e:
+            console.print(f"  [red]FAIL[/red] {path}: {type(e).__name__}: {e}")
             raise typer.Exit(1)
 
     # 2. Load VC profile
@@ -78,8 +87,12 @@ def generate(
             f"  [green]OK[/green] {vc_profile.name} "
             f"({len(vc_profile.thesis_points)} thesis points)"
         )
-    except Exception as e:
+    except ProfileNotFoundError as e:
         console.print(f"  [red]FAIL[/red] {e}")
+        console.print("  Run [bold]pitchdeck profiles[/bold] to see available profiles.")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"  [red]FAIL[/red] {type(e).__name__}: {e}")
         raise typer.Exit(1)
 
     # 3. Build initial company profile from extracted text
@@ -138,7 +151,7 @@ def generate(
         console.print("[red]Check file permissions and disk space.[/red]")
         raise typer.Exit(1)
 
-    # 7. Save JSON (for validation pipeline)
+    # 7. Save JSON (always — path defaults to output with .json extension; --json overrides)
     if save_json:
         json_path = save_json
     else:
@@ -220,6 +233,8 @@ def validate(
         console.print(f"  [red]FAIL[/red] Cannot read file: {e}")
         raise typer.Exit(1)
 
+    import json as json_mod
+
     from pydantic import ValidationError
 
     try:
@@ -233,6 +248,10 @@ def validate(
         for err in e.errors()[:5]:
             loc = " > ".join(str(l) for l in err["loc"])
             console.print(f"    {loc}: {err['msg']}")
+        raise typer.Exit(1)
+    except json_mod.JSONDecodeError as e:
+        console.print(f"  [red]FAIL[/red] File is not valid JSON: {e}")
+        console.print("  [dim]Hint: use the .json file produced by 'pitchdeck generate', not the .md file.[/dim]")
         raise typer.Exit(1)
     except Exception as e:
         console.print(f"  [red]FAIL[/red] Cannot parse deck JSON: {e}")
@@ -255,6 +274,12 @@ def validate(
         raise typer.Exit(1)
 
     # 3. Validate
+    if not 0 <= threshold <= 100:
+        console.print(
+            f"[red]Error: --threshold must be between 0 and 100, got {threshold}[/red]"
+        )
+        raise typer.Exit(1)
+
     if not skip_llm:
         import os
 
@@ -305,6 +330,10 @@ def validate(
             f"\n[bold red]Error: Failed to save report to {output}: {e}[/bold red]"
         )
         console.print("[red]Check disk space and directory permissions.[/red]")
+    except Exception as e:
+        console.print(
+            f"\n[bold red]Error: Failed to save report to {output}: {type(e).__name__}: {e}[/bold red]"
+        )
 
     # 5. Print summary
     pass_fail = "[green]PASS[/green]" if result.pass_fail else "[red]FAIL[/red]"
@@ -329,7 +358,7 @@ def validate(
     if report_saved:
         console.print(f"\n[bold]Report saved to {output}[/bold]")
     else:
-        console.print(f"\n[yellow]Report not saved (see error above).[/yellow]")
+        console.print(f"\n[bold red]Report not saved — see error above.[/bold red]")
         raise typer.Exit(1)
 
 

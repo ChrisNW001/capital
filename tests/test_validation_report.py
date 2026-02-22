@@ -18,7 +18,7 @@ class TestRenderValidationReport:
         assert "# Deck Validation Report" in md
         assert "**Deck**: Neurawork" in md
         assert "**Target VC**: Test VC" in md
-        assert "**Overall Score**: 73/100" in md
+        assert "**Overall Score**: 74/100" in md
         assert "**PASS**" in md
 
     def test_renders_score_breakdown_table(
@@ -86,7 +86,6 @@ class TestRenderValidationReport:
             deck_name="Test",
             target_vc="VC",
             validated_at="2026-01-01",
-            overall_score=40,
             pass_threshold=60,
             dimension_scores=[],
             slide_scores=[],
@@ -104,7 +103,6 @@ class TestRenderValidationReport:
             deck_name="Test",
             target_vc="VC",
             validated_at="2026-01-01",
-            overall_score=50,
             pass_threshold=60,
             dimension_scores=[],
             slide_scores=[],

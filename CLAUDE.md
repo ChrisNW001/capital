@@ -6,7 +6,7 @@ AI assistant instructions for the Capital pitchdeck project.
 
 `pitchdeck` is a CLI tool that generates and validates investor pitch decks for B2B AI/SaaS companies. It uses Claude (via the Anthropic API) for deck generation and LLM-powered scoring.
 
-Two user-facing commands: `generate` and `validate`. See `README.md` for usage.
+Three user-facing commands: `generate`, `validate`, and `profiles`. See `README.md` for usage.
 
 ## Architecture
 

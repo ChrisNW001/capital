@@ -165,3 +165,28 @@ class TestGenerateCLISaveErrors:
                             ])
         assert result.exit_code == 1
         assert "Failed to save deck" in result.output
+
+    def test_save_json_failure_exits_1(self, tmp_path):
+        """When model_dump_json raises OSError, generate command exits non-zero."""
+        mock_deck = MagicMock()
+        mock_deck.slides = []
+        mock_deck.gaps_identified = []
+        mock_deck.model_dump_json.side_effect = OSError("Disk full")
+
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.parsers.extract_document", return_value="text"):
+                with patch("pitchdeck.profiles.load_vc_profile") as mock_profile:
+                    mock_profile.return_value = MagicMock(
+                        name="VC", thesis_points=["x"],
+                    )
+                    with patch("pitchdeck.engine.narrative.generate_deck", return_value=mock_deck):
+                        with patch("pitchdeck.output.save_markdown"):
+                            input_file = tmp_path / "doc.pdf"
+                            input_file.write_text("dummy")
+                            result = runner.invoke(app, [
+                                "generate", str(input_file),
+                                "--output", str(tmp_path / "deck.md"),
+                                "--skip-gaps",
+                            ])
+        assert result.exit_code == 1
+        assert "Failed to save JSON" in result.output
