@@ -50,7 +50,7 @@ def generate_deck(
 
     client = Anthropic()
 
-    vc_context = _build_vc_context(vc_profile)
+    vc_context = build_vc_context(vc_profile)
     slide_instructions = _build_slide_instructions(slide_templates)
     narrative_arc = get_narrative_arc()
 
@@ -108,7 +108,7 @@ Generate ALL {len(slide_templates)} slides in order. Return ONLY the JSON object
     return _parse_deck_response(response, company, vc_profile)
 
 
-def _build_vc_context(vc_profile: VCProfile) -> str:
+def build_vc_context(vc_profile: VCProfile) -> str:
     """Format VC thesis points, preferences, and custom checks into prompt text."""
     lines = [
         f"VC: {vc_profile.name} ({vc_profile.fund_name})",

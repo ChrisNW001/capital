@@ -14,7 +14,7 @@ from anthropic import (
     RateLimitError,
 )
 
-from pitchdeck.engine.narrative import _build_vc_context
+from pitchdeck.engine.narrative import build_vc_context
 
 from pitchdeck.engine.slides import SLIDE_TEMPLATES
 from pitchdeck.models import (
@@ -143,13 +143,14 @@ def _score_slide_rules(slide: SlideContent) -> SlideValidationScore:
 
 
 def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScore:
-    """Score deck completeness: slide count, required slide types, speaker notes coverage, and data gaps."""
+    """Score deck completeness: slide count vs preferred, required slide type coverage, and speaker notes presence."""
     evidence_found = []
     evidence_missing = []
 
-    # Slide count check
-    expected = len(vc_profile.deck_preferences.must_include_slides) or 15
+    # Axis 1: Slide count vs preferred
+    expected = vc_profile.deck_preferences.preferred_slide_count
     actual = len(deck.slides)
+    slide_count_score = min(100, int((actual / max(expected, 1)) * 100))
     if actual >= expected:
         evidence_found.append(f"{actual}/{expected} slides present")
     else:
@@ -157,12 +158,13 @@ def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScor
             f"Only {actual}/{expected} slides present"
         )
 
-    # Check required slide types
+    # Axis 2: Required slide type coverage
     slide_types = {s.slide_type for s in deck.slides}
     must_include = set(vc_profile.deck_preferences.must_include_slides)
     if must_include:
         present = must_include & slide_types
         missing = must_include - slide_types
+        type_score = int((len(present) / len(must_include)) * 100)
         if present:
             evidence_found.append(
                 f"Required slide types present: {', '.join(sorted(present))}"
@@ -171,30 +173,27 @@ def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScor
             evidence_missing.append(
                 f"Missing required slide types: {', '.join(sorted(missing))}"
             )
+    else:
+        type_score = 100  # no requirements = full marks
 
-    # Speaker notes coverage
+    # Axis 3: Speaker notes coverage
     notes_count = sum(
         1 for s in deck.slides if s.speaker_notes.strip()
     )
+    notes_score = int((notes_count / max(len(deck.slides), 1)) * 100)
     evidence_found.append(
         f"Speaker notes on {notes_count}/{len(deck.slides)} slides"
     )
 
-    # Gaps penalty
+    # Gaps penalty (informational — recorded in evidence but does not affect axes)
     if deck.gaps_identified:
         evidence_missing.append(
             f"{len(deck.gaps_identified)} data gaps identified: "
             f"{', '.join(deck.gaps_identified[:5])}"
         )
 
-    # Calculate score
-    total_checks = expected + len(must_include) + len(deck.slides)
-    passed_checks = (
-        min(actual, expected)
-        + len(must_include & slide_types)
-        + notes_count
-    )
-    score = int((passed_checks / max(total_checks, 1)) * 100)
+    # Average the three independent axes
+    score = (slide_count_score + type_score + notes_score) // 3
 
     return DimensionScore(
         dimension="completeness",
@@ -322,7 +321,7 @@ def _check_custom_checks(
             overlap = check_words & content_words
             if len(overlap) >= 2:
                 passed = True
-                evidence = f"Content overlap: {', '.join(sorted(overlap)[:5])}"
+                evidence = f"Weak match (word overlap): {', '.join(sorted(overlap)[:5])}"
 
         results.append(
             CustomCheckResult(
@@ -367,7 +366,7 @@ def _score_qualitative(
         )
 
     client = Anthropic()
-    vc_context = _build_vc_context(vc_profile)
+    vc_context = build_vc_context(vc_profile)
 
     system_messages = [
         {"type": "text", "text": VALIDATOR_SYSTEM_PROMPT},
@@ -483,16 +482,20 @@ def _parse_validation_response(response) -> dict:
 
     json_match = re.search(r"\{[\s\S]*\}", raw_text)
     if not json_match:
+        snippet = raw_text[:200] + ("..." if len(raw_text) > 200 else "")
         raise PitchDeckError(
             "Failed to parse validation response — "
-            "no JSON found in Claude output"
+            f"no JSON found in Claude output. Response starts with: {snippet}"
         )
 
     try:
         return json.loads(json_match.group())
     except json.JSONDecodeError as e:
+        extracted = json_match.group()
+        snippet = extracted[:200] + ("..." if len(extracted) > 200 else "")
         raise PitchDeckError(
-            f"Failed to parse validation JSON: {e}"
+            f"Failed to parse validation JSON: {e}. "
+            f"Extracted text starts with: {snippet}"
         ) from e
 
 
@@ -641,9 +644,11 @@ def validate_deck(
             num = sq.get("slide_number")
             note = sq.get("quality_note", "")
             if num and note:
-                for ss in slide_scores:
-                    if ss.slide_number == num and note:
-                        ss.suggestions.append(note)
+                for i, ss in enumerate(slide_scores):
+                    if ss.slide_number == num:
+                        slide_scores[i] = ss.model_copy(
+                            update={"suggestions": ss.suggestions + [note]}
+                        )
 
         top_strengths = llm_data.get("top_strengths", [])
         critical_gaps = llm_data.get("critical_gaps", [])

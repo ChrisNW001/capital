@@ -127,9 +127,16 @@ def generate(
         raise typer.Exit(1)
 
     # 6. Save output
-    save_markdown(deck, output)
-    console.print(f"\n[bold green]Deck saved to {output}[/bold green]")
-    console.print(f"  Slides: {len(deck.slides)}")
+    try:
+        save_markdown(deck, output)
+        console.print(f"\n[bold green]Deck saved to {output}[/bold green]")
+        console.print(f"  Slides: {len(deck.slides)}")
+    except OSError as e:
+        console.print(
+            f"\n[bold red]Error: Failed to save deck to {output}: {e}[/bold red]"
+        )
+        console.print("[red]Check file permissions and disk space.[/red]")
+        raise typer.Exit(1)
 
     # 7. Save JSON (for validation pipeline)
     if save_json:
@@ -323,6 +330,7 @@ def validate(
         console.print(f"\n[bold]Report saved to {output}[/bold]")
     else:
         console.print(f"\n[yellow]Report not saved (see error above).[/yellow]")
+        raise typer.Exit(1)
 
 
 if __name__ == "__main__":

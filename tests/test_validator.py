@@ -8,6 +8,7 @@ import pytest
 
 from pitchdeck.engine.slides import SLIDE_TEMPLATES
 from pitchdeck.engine.validator import (
+    _build_improvement_priorities,
     _check_custom_checks,
     _get_template_for_slide,
     _parse_validation_response,
@@ -17,6 +18,7 @@ from pitchdeck.engine.validator import (
     validate_deck,
 )
 from pitchdeck.models import (
+    CustomCheckResult,
     DeckPreferences,
     DeckValidationResult,
     DimensionScore,
@@ -244,6 +246,8 @@ class TestCheckCustomChecks:
         assert isinstance(results, list)
         # sample_vc_profile has 1 custom check: "Must show capital efficiency"
         assert len(results) == 1
+        assert results[0].passed is True
+        assert "Keywords found" in results[0].evidence
 
     def test_fails_when_keywords_absent(self, sample_vc_profile):
         deck = PitchDeck(
@@ -284,7 +288,7 @@ class TestCheckCustomChecks:
         )
         results = _check_custom_checks(deck, profile)
         assert results[0].passed is True
-        assert "Content overlap" in results[0].evidence
+        assert "Weak match (word overlap)" in results[0].evidence
 
     def test_fallback_overlap_fails_with_no_match(self):
         profile = VCProfile(
@@ -576,3 +580,73 @@ class TestDimensionScoreBounds:
                 weight=0.2,
                 rationale="Too low",
             )
+
+
+class TestBuildImprovementPriorities:
+    def test_ordering_custom_checks_before_gaps_before_slides(self):
+        """Failed custom checks come first, then critical gaps, then slide issues."""
+        slide_scores = [
+            SlideValidationScore(
+                slide_number=1, slide_type="cover", score=40,
+                issues=["Missing title"],
+            ),
+            SlideValidationScore(
+                slide_number=2, slide_type="problem", score=50,
+                issues=["Too many bullets"],
+            ),
+        ]
+        custom_checks = [
+            CustomCheckResult(check="Capital efficiency", passed=False, evidence=""),
+            CustomCheckResult(check="European sovereignty", passed=True, evidence="Found"),
+        ]
+        critical_gaps = ["Missing NDR data"]
+
+        priorities = _build_improvement_priorities(
+            slide_scores, custom_checks, critical_gaps
+        )
+        assert len(priorities) >= 3
+        # Failed custom checks first
+        assert "Capital efficiency" in priorities[0]
+        # Critical gaps second
+        assert "Missing NDR data" in priorities[1]
+        # Slide issues third
+        assert "Fix slide" in priorities[2]
+
+
+class TestScoreMetricsDensityNoEmphasis:
+    def test_no_emphasis_uses_template_coverage_only(self):
+        """When VC profile has empty metrics_emphasis, score is template-coverage only."""
+        profile = VCProfile(
+            name="VC", fund_name="F", stage_focus=["seed"],
+            sector_focus=["ai"], geo_focus=["EU"], thesis_points=["x"],
+            deck_preferences=DeckPreferences(
+                preferred_slide_count=15,
+                metrics_emphasis=[],
+            ),
+        )
+        deck = PitchDeck(
+            company_name="X", target_vc="VC", generated_at="2026-01-01",
+            slides=[
+                SlideContent(
+                    slide_number=1, slide_type="traction",
+                    title="Traction", headline="Growth",
+                    bullets=["Point"], metrics=["ARR: 2M", "NDR: 115%"],
+                    speaker_notes="Notes",
+                ),
+            ],
+            narrative_arc="arc",
+        )
+        score = _score_metrics_density(deck, profile)
+        assert score.dimension == "metrics_density"
+        assert 0 <= score.score <= 100
+        # No emphasis metrics should appear in evidence
+        assert not any("Missing:" in e for e in score.evidence_missing)
+
+
+class TestParseValidationResponseSnippets:
+    def test_no_json_error_includes_snippet(self):
+        """Error message includes truncated response when no JSON found."""
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text="Just some plain text without braces")]
+        with pytest.raises(PitchDeckError, match="Response starts with"):
+            _parse_validation_response(mock_response)

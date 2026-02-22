@@ -112,9 +112,9 @@ class TestNarrativeEngine:
                 generate_deck(sample_company, sample_vc_profile, templates)
 
     def test_build_vc_context(self, sample_vc_profile):
-        from pitchdeck.engine.narrative import _build_vc_context
+        from pitchdeck.engine.narrative import build_vc_context
 
-        context = _build_vc_context(sample_vc_profile)
+        context = build_vc_context(sample_vc_profile)
         assert "Test VC" in context
         assert "AI infrastructure" in context
         assert "Capital efficiency" in context

@@ -1,6 +1,6 @@
 """Tests for the validate CLI command."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from typer.testing import CliRunner
@@ -119,3 +119,49 @@ class TestValidateCLIProfileErrors:
         ])
         assert result.exit_code == 1
         assert "not found" in result.output
+
+
+class TestValidateCLISaveErrors:
+    def test_report_save_failure_exits_1(self, sample_deck_json, tmp_path):
+        """When save_validation_report raises OSError, command exits non-zero."""
+        with patch(
+            "pitchdeck.output.save_validation_report",
+            side_effect=OSError("Permission denied"),
+        ):
+            result = runner.invoke(app, [
+                "validate", str(sample_deck_json),
+                "--skip-llm",
+                "--output", str(tmp_path / "report.md"),
+            ])
+        assert result.exit_code == 1
+        assert "Failed to save report" in result.output
+
+
+class TestGenerateCLISaveErrors:
+    def test_save_markdown_failure_exits_1(self, tmp_path):
+        """When save_markdown raises OSError, generate command exits non-zero."""
+        mock_deck = MagicMock()
+        mock_deck.slides = []
+        mock_deck.gaps_identified = []
+        mock_deck.model_dump_json.return_value = "{}"
+
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.parsers.extract_document", return_value="text"):
+                with patch("pitchdeck.profiles.load_vc_profile") as mock_profile:
+                    mock_profile.return_value = MagicMock(
+                        name="VC", thesis_points=["x"],
+                    )
+                    with patch("pitchdeck.engine.narrative.generate_deck", return_value=mock_deck):
+                        with patch(
+                            "pitchdeck.output.save_markdown",
+                            side_effect=OSError("Disk full"),
+                        ):
+                            input_file = tmp_path / "doc.pdf"
+                            input_file.write_text("dummy")
+                            result = runner.invoke(app, [
+                                "generate", str(input_file),
+                                "--output", str(tmp_path / "deck.md"),
+                                "--skip-gaps",
+                            ])
+        assert result.exit_code == 1
+        assert "Failed to save deck" in result.output

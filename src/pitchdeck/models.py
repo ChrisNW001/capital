@@ -159,9 +159,9 @@ class DeckValidationResult(BaseModel):
     dimension_scores: List[DimensionScore]
     slide_scores: List[SlideValidationScore]
     custom_check_results: List[CustomCheckResult]
-    top_strengths: List[str]
-    critical_gaps: List[str]
-    improvement_priorities: List[str]  # ordered by impact
+    top_strengths: List[str] = Field(default_factory=list)
+    critical_gaps: List[str] = Field(default_factory=list)
+    improvement_priorities: List[str] = Field(default_factory=list)  # ordered by impact
     recommendation: str
 
     @computed_field
