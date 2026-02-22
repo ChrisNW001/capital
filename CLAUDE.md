@@ -30,7 +30,7 @@ tests/                          — pytest tests
 
 ## Key conventions
 
-**Models**: All Pydantic models live in `src/pitchdeck/models.py`. Use `List[X]` (from `typing`) for list fields, `Field(default_factory=list)` for mutable defaults. Score fields use `Field(ge=0, le=100)`.
+**Models**: All Pydantic models live in `src/pitchdeck/models.py`. Use `List[X]` (from `typing`) for list fields, `Field(default_factory=list)` for mutable defaults. Score fields use `Field(ge=0, le=100)`. Use `@computed_field` for derived properties (see `DeckValidationResult.pass_fail` for the pattern).
 
 **CLI**: Typer commands use `Annotated` for all options and arguments. Follow the pattern in `cli.py`. Use Rich console for output — green for success, red for failure, yellow for warnings.
 
