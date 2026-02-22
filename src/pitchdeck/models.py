@@ -1,8 +1,8 @@
 """Pydantic data models for the pitch deck generator."""
 
-from typing import List, Optional
+from typing import Dict, List, Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field, model_validator
 
 
 class PitchDeckError(Exception):
@@ -116,7 +116,7 @@ class PitchDeck(BaseModel):
     slides: List[SlideContent]
     narrative_arc: str
     gaps_identified: List[str] = Field(default_factory=list)
-    gaps_filled: dict[str, str] = Field(default_factory=dict)
+    gaps_filled: Dict[str, str] = Field(default_factory=dict)
 
 
 class GapQuestion(BaseModel):
@@ -125,3 +125,71 @@ class GapQuestion(BaseModel):
     importance: str  # "critical", "important", "nice-to-have"
     default: Optional[str] = None
     choices: List[str] = Field(default_factory=list)
+
+
+DimensionName = Literal[
+    "completeness",
+    "metrics_density",
+    "narrative_coherence",
+    "thesis_alignment",
+    "common_mistakes",
+]
+
+
+class DimensionScore(BaseModel):
+    dimension: DimensionName
+    score: int = Field(ge=0, le=100)
+    weight: float = Field(ge=0.0, le=1.0)
+    rationale: str
+    evidence_found: List[str] = Field(default_factory=list)
+    evidence_missing: List[str] = Field(default_factory=list)
+
+
+class SlideValidationScore(BaseModel):
+    slide_number: int = Field(ge=1)
+    slide_type: str
+    score: int = Field(ge=0, le=100)
+    issues: List[str] = Field(default_factory=list)
+    suggestions: List[str] = Field(default_factory=list)
+
+
+class CustomCheckResult(BaseModel):
+    check: str  # the original custom_check string from VCProfile
+    passed: bool
+    evidence: str = ""
+
+
+class DeckValidationResult(BaseModel):
+    deck_name: str
+    target_vc: str
+    validated_at: str
+    pass_threshold: int = Field(default=60, ge=0, le=100)
+    dimension_scores: List[DimensionScore]
+    slide_scores: List[SlideValidationScore]
+    custom_check_results: List[CustomCheckResult]
+    top_strengths: List[str] = Field(default_factory=list)
+    critical_gaps: List[str] = Field(default_factory=list)
+    improvement_priorities: List[str] = Field(default_factory=list)  # ordered by impact
+    recommendation: str
+
+    @model_validator(mode="after")
+    def _check_weight_sum(self) -> "DeckValidationResult":
+        weight_sum = sum(d.weight for d in self.dimension_scores)
+        if self.dimension_scores and abs(weight_sum - 1.0) > 0.01:
+            raise ValueError(
+                f"Dimension weights must sum to ~1.0, got {weight_sum:.3f}"
+            )
+        return self
+
+    @computed_field
+    @property
+    def overall_score(self) -> int:
+        if not self.dimension_scores:
+            return 0
+        raw = sum(d.score * d.weight for d in self.dimension_scores)
+        return max(0, min(100, int(round(raw))))
+
+    @computed_field
+    @property
+    def pass_fail(self) -> bool:
+        return self.overall_score >= self.pass_threshold
