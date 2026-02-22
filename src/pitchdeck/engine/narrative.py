@@ -5,7 +5,13 @@ import os
 import re
 from typing import List
 
-from anthropic import Anthropic
+from anthropic import (
+    Anthropic,
+    APIStatusError,
+    APITimeoutError,
+    AuthenticationError,
+    RateLimitError,
+)
 
 from pitchdeck.engine.slides import get_narrative_arc
 from pitchdeck.models import (
@@ -98,12 +104,30 @@ Return a JSON object with this exact structure:
 
 Generate ALL {len(slide_templates)} slides in order. Return ONLY the JSON object, no other text."""
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=16384,
-        system=system_messages,
-        messages=[{"role": "user", "content": user_prompt}],
-    )
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=16384,
+            system=system_messages,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+    except AuthenticationError:
+        raise PitchDeckError(
+            "Invalid API key. Check ANTHROPIC_API_KEY at https://console.anthropic.com/"
+        )
+    except RateLimitError:
+        raise PitchDeckError(
+            "Anthropic API rate limit hit. Wait a moment and try again."
+        )
+    except APITimeoutError:
+        raise PitchDeckError(
+            "Anthropic API timed out. The document may be too large — "
+            "try reducing input size."
+        )
+    except APIStatusError as e:
+        raise PitchDeckError(
+            f"Anthropic API error (HTTP {e.status_code}): {e.message}"
+        ) from e
 
     return _parse_deck_response(response, company, vc_profile)
 
@@ -166,7 +190,18 @@ def _parse_deck_response(
     """Extract structured content from Claude response into PitchDeck model."""
     from datetime import datetime
 
-    raw_text = response.content[0].text
+    if not response.content:
+        raise PitchDeckError(
+            "Claude returned an empty response. "
+            "The input documents may be too large — try reducing input size."
+        )
+    content_block = response.content[0]
+    if not hasattr(content_block, "text"):
+        raise PitchDeckError(
+            f"Unexpected Claude response format: "
+            f"expected text block, got {type(content_block).__name__}"
+        )
+    raw_text = content_block.text
 
     # Try to extract JSON from the response
     json_match = re.search(r"\{[\s\S]*\}", raw_text)

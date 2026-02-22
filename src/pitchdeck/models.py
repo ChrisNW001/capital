@@ -1,8 +1,8 @@
 """Pydantic data models for the pitch deck generator."""
 
-from typing import List, Literal, Optional
+from typing import Dict, List, Literal, Optional
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, model_validator
 
 
 class PitchDeckError(Exception):
@@ -116,7 +116,7 @@ class PitchDeck(BaseModel):
     slides: List[SlideContent]
     narrative_arc: str
     gaps_identified: List[str] = Field(default_factory=list)
-    gaps_filled: dict[str, str] = Field(default_factory=dict)
+    gaps_filled: Dict[str, str] = Field(default_factory=dict)
 
 
 class GapQuestion(BaseModel):
@@ -171,6 +171,15 @@ class DeckValidationResult(BaseModel):
     critical_gaps: List[str] = Field(default_factory=list)
     improvement_priorities: List[str] = Field(default_factory=list)  # ordered by impact
     recommendation: str
+
+    @model_validator(mode="after")
+    def _check_weight_sum(self) -> "DeckValidationResult":
+        weight_sum = sum(d.weight for d in self.dimension_scores)
+        if self.dimension_scores and abs(weight_sum - 1.0) > 0.01:
+            raise ValueError(
+                f"Dimension weights must sum to ~1.0, got {weight_sum:.3f}"
+            )
+        return self
 
     @computed_field
     @property

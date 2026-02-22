@@ -188,7 +188,7 @@ def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScor
         f"Speaker notes on {notes_count}/{len(deck.slides)} slides"
     )
 
-    # Gaps penalty (informational — recorded in evidence but does not affect axes)
+    # Gaps (informational only — recorded in evidence but does not affect score)
     if deck.gaps_identified:
         evidence_missing.append(
             f"{len(deck.gaps_identified)} data gaps identified: "
@@ -196,7 +196,7 @@ def _score_completeness(deck: PitchDeck, vc_profile: VCProfile) -> DimensionScor
         )
 
     # Average the three independent axes
-    score = (slide_count_score + type_score + notes_score) // 3
+    score = int(round((slide_count_score + type_score + notes_score) / 3))
 
     return DimensionScore(
         dimension="completeness",
@@ -246,7 +246,7 @@ def _score_metrics_density(
 
     coverage = total_metrics / max(total_expected, 1)
     if emphasis:
-        emphasis_found = len(evidence_found) - 1  # subtract the total count entry
+        emphasis_found = sum(1 for e in evidence_found if e.startswith("Found:"))
         emphasis_total = len(emphasis)
         emphasis_coverage = emphasis_found / emphasis_total
         score = int(((coverage * 0.5) + (emphasis_coverage * 0.5)) * 100)
@@ -318,6 +318,8 @@ def _check_custom_checks(
                 if matches:
                     passed = True
                     evidence = f"Keywords found: {', '.join(matches)}"
+                else:
+                    evidence = f"Keywords checked but not found: {', '.join(keywords)}"
                 break
 
         if not matched_pattern:

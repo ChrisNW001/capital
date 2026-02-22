@@ -174,3 +174,102 @@ class TestNarrativeEngine:
             _parse_deck_response(
                 mock_response, sample_company, sample_vc_profile
             )
+
+    def test_parse_deck_response_empty_response(
+        self, sample_company, sample_vc_profile
+    ):
+        from pitchdeck.engine.narrative import _parse_deck_response
+
+        mock_response = MagicMock()
+        mock_response.content = []
+
+        with pytest.raises(PitchDeckError, match="empty response"):
+            _parse_deck_response(
+                mock_response, sample_company, sample_vc_profile
+            )
+
+    def test_parse_deck_response_non_text_block(
+        self, sample_company, sample_vc_profile
+    ):
+        from pitchdeck.engine.narrative import _parse_deck_response
+
+        mock_response = MagicMock()
+        block = MagicMock(spec=[])  # no .text attribute
+        mock_response.content = [block]
+
+        with pytest.raises(PitchDeckError, match="expected text block"):
+            _parse_deck_response(
+                mock_response, sample_company, sample_vc_profile
+            )
+
+
+class TestGenerateDeckAPIErrors:
+    """Test that API errors from generate_deck are wrapped as PitchDeckError."""
+
+    def test_authentication_error(self, sample_company, sample_vc_profile):
+        from anthropic import AuthenticationError
+
+        from pitchdeck.engine.narrative import generate_deck
+
+        templates = get_slide_templates(sample_vc_profile)
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "bad-key"}):
+            with patch("pitchdeck.engine.narrative.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    AuthenticationError(
+                        message="Invalid API key",
+                        response=MagicMock(status_code=401),
+                        body=None,
+                    )
+                )
+                with pytest.raises(PitchDeckError, match="Invalid API key"):
+                    generate_deck(sample_company, sample_vc_profile, templates)
+
+    def test_rate_limit_error(self, sample_company, sample_vc_profile):
+        from anthropic import RateLimitError
+
+        from pitchdeck.engine.narrative import generate_deck
+
+        templates = get_slide_templates(sample_vc_profile)
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.narrative.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    RateLimitError(
+                        message="Rate limit exceeded",
+                        response=MagicMock(status_code=429),
+                        body=None,
+                    )
+                )
+                with pytest.raises(PitchDeckError, match="rate limit"):
+                    generate_deck(sample_company, sample_vc_profile, templates)
+
+    def test_timeout_error(self, sample_company, sample_vc_profile):
+        from anthropic import APITimeoutError
+
+        from pitchdeck.engine.narrative import generate_deck
+
+        templates = get_slide_templates(sample_vc_profile)
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.narrative.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    APITimeoutError(request=MagicMock())
+                )
+                with pytest.raises(PitchDeckError, match="timed out"):
+                    generate_deck(sample_company, sample_vc_profile, templates)
+
+    def test_api_status_error(self, sample_company, sample_vc_profile):
+        from anthropic import APIStatusError
+
+        from pitchdeck.engine.narrative import generate_deck
+
+        templates = get_slide_templates(sample_vc_profile)
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.narrative.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.side_effect = (
+                    APIStatusError(
+                        message="Internal server error",
+                        response=MagicMock(status_code=500),
+                        body=None,
+                    )
+                )
+                with pytest.raises(PitchDeckError, match="API error"):
+                    generate_deck(sample_company, sample_vc_profile, templates)

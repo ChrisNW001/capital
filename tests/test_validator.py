@@ -188,9 +188,14 @@ class TestScoreCompleteness:
         score = _score_completeness(empty_deck, sample_vc_profile)
         assert score.score < 20
 
-    def test_gaps_reduce_score(
+    def test_gaps_recorded_in_evidence_without_affecting_score(
         self, sample_multi_slide_deck, sample_vc_profile
     ):
+        # Get baseline score without gaps
+        baseline = _score_completeness(
+            sample_multi_slide_deck, sample_vc_profile
+        )
+
         sample_multi_slide_deck.gaps_identified = [
             "Gap 1",
             "Gap 2",
@@ -202,6 +207,8 @@ class TestScoreCompleteness:
         assert "3 data gaps identified" in " ".join(
             score.evidence_missing
         )
+        # Gaps are informational only — score should be unchanged
+        assert score.score == baseline.score
 
 
 class TestScoreMetricsDensity:
@@ -269,6 +276,7 @@ class TestCheckCustomChecks:
         results = _check_custom_checks(deck, sample_vc_profile)
         assert len(results) == 1
         assert results[0].passed is False
+        assert "Keywords checked but not found" in results[0].evidence
 
     def test_fallback_overlap_passes_with_sufficient_match(self):
         profile = VCProfile(
@@ -527,6 +535,36 @@ class TestExtractDimensionErrors:
                     self._make_mock_response(bad_json)
                 )
                 with pytest.raises(PitchDeckError, match="missing required fields"):
+                    validate_deck(
+                        sample_multi_slide_deck, sample_vc_profile,
+                        skip_llm=False,
+                    )
+
+
+class TestExtractDimensionNonNumericScore:
+    """Test that non-numeric LLM scores raise PitchDeckError."""
+
+    def _make_mock_response(self, text):
+        mock_response = MagicMock()
+        mock_response.content = [MagicMock(text=text)]
+        return mock_response
+
+    def test_non_numeric_score_raises(
+        self, sample_multi_slide_deck, sample_vc_profile
+    ):
+        bad_json = json.dumps({
+            "narrative_coherence": {"score": "high", "rationale": "ok"},
+            "thesis_alignment": {"score": 60, "rationale": "ok"},
+            "common_mistakes": {"score": 70, "rationale": "ok"},
+            "slide_quality": [], "top_strengths": [],
+            "critical_gaps": [], "recommendation": "",
+        })
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
+            with patch("pitchdeck.engine.validator.Anthropic") as mock_anthropic:
+                mock_anthropic.return_value.messages.create.return_value = (
+                    self._make_mock_response(bad_json)
+                )
+                with pytest.raises(PitchDeckError, match="non-numeric score"):
                     validate_deck(
                         sample_multi_slide_deck, sample_vc_profile,
                         skip_llm=False,

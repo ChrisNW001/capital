@@ -110,6 +110,28 @@ class TestValidateCLIRuleBased:
         assert "Report saved to" in result.output
 
 
+class TestValidateCLIThresholdBounds:
+    def test_threshold_above_100_exits_1(self, sample_deck_json, tmp_path):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--threshold", "150",
+            "--output", str(tmp_path / "report.md"),
+        ])
+        assert result.exit_code == 1
+        assert "between 0 and 100" in result.output
+
+    def test_threshold_below_0_exits_1(self, sample_deck_json, tmp_path):
+        result = runner.invoke(app, [
+            "validate", str(sample_deck_json),
+            "--skip-llm",
+            "--threshold", "-5",
+            "--output", str(tmp_path / "report.md"),
+        ])
+        assert result.exit_code == 1
+        assert "between 0 and 100" in result.output
+
+
 class TestValidateCLIProfileErrors:
     def test_unknown_profile_exits_1(self, sample_deck_json):
         result = runner.invoke(app, [

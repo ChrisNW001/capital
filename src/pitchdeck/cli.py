@@ -35,7 +35,7 @@ def generate(
     ] = False,
     save_json: Annotated[
         str,
-        typer.Option("--json", help="Path for JSON output (default: replaces .md extension)"),
+        typer.Option("--json", help="Path for JSON output (default: replaces output file extension with .json)"),
     ] = "",
 ):
     """Generate a pitch deck from company documents."""
