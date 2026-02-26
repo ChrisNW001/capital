@@ -1,0 +1,408 @@
+{
+  "company_name": "",
+  "target_vc": "Earlybird Capital",
+  "generated_at": "2026-02-22T16:49:52.057758",
+  "slides": [
+    {
+      "slide_number": 1,
+      "slide_type": "cover",
+      "title": "NeuraPlox: The AI OS for European SMEs",
+      "headline": "The missing infrastructure layer that makes AI stick in the Mittelstand — built in Germany, compliant by design.",
+      "bullets": [],
+      "metrics": [
+        "Founded 2024 · 20 engineers · 25+ KI projects delivered · Bootstrapped"
+      ],
+      "speaker_notes": "We are Neurawork, a German AI engineering company that has spent two years inside the KI failure problem of the European Mittelstand. NeuraPlox is the product that comes out of that experience — a 7-layer AI architecture platform that makes enterprise-grade AI deployable, governable, and EU AI Act-compliant for companies with 50 to 500 employees. We are raising to take our validated prototype to commercial scale.",
+      "transition_to_next": "Before we show you the product, let us show you the problem — because the numbers are more alarming than most investors realize.",
+      "vc_alignment_notes": [
+        "Signals European origin and DACH focus immediately — core to Earlybird's geographic thesis",
+        "Bootstrapped to 20 engineers in 2 years signals capital efficiency before a slide is turned",
+        "25+ delivered projects establishes domain expertise, not just theory — maps to Earlybird's 'founders who deeply understand the vertical' criterion"
+      ]
+    },
+    {
+      "slide_number": 2,
+      "slide_type": "executive-summary",
+      "title": "The KI-Betriebssystem for 70,000 German SMEs",
+      "headline": "NeuraPlox is the first 7-layer AI infrastructure platform built exclusively for the European Mittelstand — cutting deployment time by 10× and infrastructure cost by 50%, with EU AI Act compliance embedded.",
+      "bullets": [
+        "🎯 Problem: 86% of German KMU recognise AI as strategic; only 23% successfully deploy — the gap is infrastructure, not ambition (Bitkom/maximal.digital 2025)",
+        "🏗️ Product: NeuraPlox — a cloud-agnostic, 7-layer 'AI OS' (Kubernetes to Agent Registry) that converts a €150K/6-month AI project into a €24K/year platform subscription deployed in <6 weeks",
+        "📊 Traction: 4 live pilot projects (TRL 4→7 roadmap), 25+ prior KI implementations, ZIM R&D grant approved (€236K, 45% of €526K project budget)",
+        "🚀 Edge: Only solution combining full-stack AI architecture + agent-centric governance + EU AI Act compliance + Mittelstand pricing — no direct comparable exists"
+      ],
+      "metrics": [
+        "Target ARR Year 1: €600K (10 customers × €60K avg)",
+        "Target ARR Year 3: €3M+ (50 customers + ecosystem revenue)",
+        "DACH SAM: ~30,000 addressable companies · €1.5B/year market potential"
+      ],
+      "speaker_notes": "The one-sentence pitch: NeuraPlox is the Linux of enterprise AI for the European Mittelstand — the foundational infrastructure layer that every AI agent runs on, sold as a managed subscription at a price point SMEs can actually afford. We have 25 projects of practitioner evidence validating the pain, 4 active pilots validating the product, and a €526K funded R&D programme building the commercial platform. Today we are raising our first institutional round to accelerate from prototype to scale.",
+      "transition_to_next": "Let me take you inside the problem — because understanding why 63 percentage points separate AI ambition from AI reality is the key to understanding why NeuraPlox has no real competitor.",
+      "vc_alignment_notes": [
+        "Maps directly to Earlybird's 'AI as infrastructure, not veneer' thesis — NeuraPlox is literally the infrastructure layer",
+        "Category creation narrative present: 'AI OS for Mittelstand' is a new category analogous to how remberg created XRM",
+        "European sovereignty angle embedded: cloud-agnostic, data stays in EU, EU AI Act compliance by design",
+        "Bottom-up ARR targets signal commercial discipline, not hockey-stick fantasy"
+      ]
+    },
+    {
+      "slide_number": 3,
+      "slide_type": "problem",
+      "title": "86% Want AI. Only 23% Succeed. The Gap Is Infrastructure.",
+      "headline": "AI adoption in the Mittelstand is failing systemically — not because use cases are missing, but because the foundational architecture layer does not exist at SME price points.",
+      "bullets": [
+        "📉 The deployment gap: 86% of German KMU recognise AI as strategically critical; only 23% have successfully operationalised an AI project — a 63-point intention-action gap (maximal.digital KI-Studie 2025)",
+        "💸 The cost trap: 60% of every AI project budget goes to redundant infrastructure (data connectors, APIs, auth) rebuilt from scratch each time; 63% of KMU report budget overruns averaging 34% (maximal.digital 2025)",
+        "🔗 The N×M integration explosion: 3 AI agents × 5 data sources = 15 bespoke integrations to build, test, and maintain; 10 × 10 = 100 — complexity scales combinatorially with each new capability",
+        "⚖️ The governance vacuum: 73% of companies report inadequate control over AI agent activity (Langflow/DataStax 2025); 47% already use GenAI without any governance framework (IW Köln 2025) — and EU AI Act High-Risk obligations activate August 2026"
+      ],
+      "metrics": [
+        "82% of KMU report significant AI engineering competency gap (maximal.digital 2025)",
+        "76% struggle with data silos blocking AI deployment (maximal.digital 2025)",
+        "Mittelstand KI investment: 0.35% of revenue — 30% below overall market avg (Horvath 2025)"
+      ],
+      "speaker_notes": "Every investor has heard 'KMU can't do AI.' What they haven't heard is the precise mechanism of failure. It is not a use-case problem — these companies have more process automation opportunities than they can count. It is an infrastructure problem: every single AI project requires the same foundational plumbing — data connectors, vector databases, governance, deployment pipelines — and it gets built from scratch every time. We know this because we built it from scratch 25 times ourselves. That 60% infrastructure overhead is not an estimate — it is our invoice data.",
+      "transition_to_next": "The problem has always existed — but three things happened in 2025 and 2026 that make this the precise moment to solve it at scale.",
+      "vc_alignment_notes": [
+        "Data-driven problem framing with 8+ cited sources matches Earlybird's 'data-driven narrative' deck preference",
+        "Problem is structural and recurring — not a point-in-time issue — signalling durable market need",
+        "Governance vacuum + EU AI Act creates regulatory urgency that aligns with Earlybird portfolio positioning around compliant AI infrastructure"
+      ]
+    },
+    {
+      "slide_number": 4,
+      "slide_type": "why-now",
+      "title": "Three Forcing Functions Converging in 2025–2026",
+      "headline": "The regulatory clock, the AI adoption inflection, and the infrastructure gap have never been better aligned — the window to define this category is open now and will close within 18 months.",
+      "bullets": [
+        "⏰ EU AI Act countdown: Transparency obligations for General Purpose AI active since August 2025; High-Risk AI system obligations (risk management, audit trails, human oversight) activate August 2026 — companies without governance infrastructure face material compliance risk in <12 months",
+        "📈 KI adoption inflection: German KI adoption nearly doubled in one year — 20% (2024) to 36% (2025) — but operationalisation has not scaled with intent; the infrastructure gap is widening, not closing (Bitkom 2025)",
+        "🏗️ Agent-era infrastructure gap: LangChain, CrewAI, AutoGen are now mainstream developer tools — but they are libraries without production infrastructure; the 'missing middle' between framework and enterprise deployment is the fastest-growing unsolved problem in enterprise AI (Gartner: 40% of enterprise apps will embed AI agents by 2026)",
+        "🇩🇪 Sovereign AI investment surge: BMWK committing €5B+ to AI and digital sovereignty; 93% of German enterprises prefer German/European AI providers (Bitkom 2025) — structural tailwind for a compliant, EU-native platform built on open standards"
+      ],
+      "metrics": [
+        "EU AI Act High-Risk deadline: August 2026 (<12 months)",
+        "German AI adoption: +80% YoY (Bitkom 2025)",
+        "93% of German enterprises prefer EU/German AI providers (Bitkom 2025)"
+      ],
+      "speaker_notes": "The reason this opportunity exists right now — and not three years ago — is the intersection of three curves. The regulatory curve is creating mandatory demand: companies that deploy AI agents without governance infrastructure will be non-compliant in August 2026. The adoption curve is creating supply of motivated buyers: AI adoption in Germany grew 80% in a single year. And the technology curve is creating a solvable problem: the frameworks now exist — LangChain, CrewAI — but the production infrastructure around them does not. NeuraPlox is that production infrastructure.",
+      "transition_to_next": "Given these three tailwinds, here is exactly what NeuraPlox does — and why its architecture cannot be replicated by a hyperscaler or a consultant.",
+      "vc_alignment_notes": [
+        "Regulatory catalyst (EU AI Act) is a core Earlybird thesis trigger — seen in Aleph Alpha and other portfolio companies",
+        "Sovereign AI angle directly mirrors Earlybird's 'European digital sovereignty' thesis pillar",
+        "Gartner citation grounds the agent infrastructure category in analyst consensus, reducing investor skepticism about market timing"
+      ]
+    },
+    {
+      "slide_number": 5,
+      "slide_type": "solution",
+      "title": "NeuraPlox: Deploy Enterprise AI in 6 Weeks, Not 6 Months",
+      "headline": "NeuraPlox is a cloud-agnostic, 7-layer AI architecture platform that eliminates the 60% infrastructure overhead of every AI project — turning a €80–150K bespoke build into a €24K/year reusable platform subscription.",
+      "bullets": [
+        "🎯 Target user: IT leaders, CTOs, and technical founders in 50–500-employee DACH companies who need to operationalise AI without a dedicated ML engineering team or Enterprise-tier budget",
+        "🏗️ What it does: Provides the complete infrastructure stack — from Kubernetes deployment (L1) through MLOps, LLM Gateway, RAG engine, observability, data connectors, and governance policy engine (L2–L6) — to an open Agent Registry where industry-specific AI agents (called 'Ploxe') are deployed and managed (L7)",
+        "⚡ Speed to value: Full platform onboarding in <2 weeks; first production AI agent ('Plox') live in <6 weeks — vs. 3–6 months for bespoke builds; implementation time reduction of 10×",
+        "💰 Cost impact: Reduces infrastructure spend from ~60% to <30% of AI project budget; platform amortises against first project savings alone — ROI positive from project 1, compounding from project 2+",
+        "🔒 Compliance by design: EU AI Act (Art. 9/12/14) and DSGVO compliance embedded in the platform architecture — not a consulting add-on; external ISO 27001 and ISO 42001 readiness assessments in progress"
+      ],
+      "metrics": [
+        "Deployment time: <6 weeks vs. 3–6 months industry standard (10× faster)",
+        "Infrastructure cost: from 60% → <30% of project budget (50%+ cost reduction)",
+        "Pricing: from €24,000/year (managed service entry) — 2–6× cheaper than nearest alternatives"
+      ],
+      "speaker_notes": "The mental model I want you to take away is this: NeuraPlox is the Linux kernel of enterprise AI. Every application — every AI agent — runs on top of it. The 7 layers handle everything from 'where does the code run' to 'which data can this agent touch' to 'how do we prove to a regulator that we have human oversight.' The customer never builds that infrastructure again. They add new AI agents to the same platform, and each one is faster and cheaper than the last. That is the land-and-expand flywheel.",
+      "transition_to_next": "Let me go one layer deeper into the architecture — because the technical decisions we have made are the source of our defensibility.",
+      "vc_alignment_notes": [
+        "Quantified impact (10× faster, 50% cost reduction) meets Earlybird's requirement for ROI-metric evidence",
+        "Compliance-by-design positioning directly addresses EU AI Act regulatory driver — core to Earlybird's European sovereignty thesis",
+        "Land-and-expand model is consistent with capital-efficient growth patterns Earlybird favours (burn multiple management)"
+      ]
+    },
+    {
+      "slide_number": 6,
+      "slide_type": "product",
+      "title": "7-Layer Architecture: The Technical Moat",
+      "headline": "NeuraPlox is the only platform combining full-stack AI infrastructure with agent-centric governance and an open ecosystem — each layer independently valuable, defensible together.",
+      "bullets": [
+        "EXECUTION LAYER (L1–L3): Kubernetes-native runtime with GitOps/ArgoCD, MLflow model registry, Feast feature store, pgvector/Milvus vector DB, multi-provider LLM gateway with intelligent cost routing, and a Hybrid-Search RAG engine (BM25 + Dense Retrieval + Cross-Encoder reranking) achieving 15–30% better retrieval accuracy vs. pure vector search",
+        "CONTROL PLANE (L4–L6): OpenTelemetry + Langfuse observability stack with per-agent cost attribution; a novel 3D-Policy-Model (Who × What Action × Which Data) enforced at runtime — goes beyond RBAC to treat AI agents as First-Class identities with individual permission matrices, audit trails, and lifecycle states; German-language PII detection (>95% precision/recall target) using Presidio + fine-tuned German NER",
+        "AGENT REGISTRY (L7): Central registry with 3-tier certification framework (Basic / Verified / Certified) for first-party and third-party Ploxe; API-first design enabling CI/CD integration and marketplace distribution; open SDK for ISVs and system integrators to build domain-specific agents",
+        "N+M DATA CONNECTIVITY: Unified Data Access Layer reduces integration complexity from N×M (agents × sources) to N+M via standardised connector framework for SAP, Microsoft 365, and DMS systems — first bidirectional transactional connector stack designed specifically for AI agent read/write access to SME source systems",
+        "CLOUD AGNOSTIC BY DESIGN: Runs identically on Azure AKS, AWS EKS, GCP GKE, or on-premise — built on open standards (Kubernetes, OpenTelemetry, Helm, ArgoCD) with zero proprietary lock-in; data never leaves customer's cloud boundary"
+      ],
+      "metrics": [
+        "TRL at project start: 4 (validated in lab with real customer data across 4 live pilots)",
+        "TRL target at Month 12: 7 (operational prototype at 3 pilot customers)",
+        "RAG accuracy uplift: +15–30% vs. pure vector search (published enterprise RAG benchmarks)"
+      ],
+      "speaker_notes": "What makes the architecture defensible is not any single component — LangGraph exists, MLflow exists, Presidio exists. What does not exist is the standardised integration of all seven layers into a single, reproducible, Mittelstand-priced platform with governance embedded as architecture rather than bolted on. The 3D-Policy-Model is our most novel IP: every AI agent gets a unique identity, a permission matrix, and a full audit trail — exactly what the EU AI Act requires for High-Risk systems. We are filing for patent protection on the agent-centric governance concept post-TRL-7.",
+      "transition_to_next": "With the architecture clear, let us put a number on the market — and I will show you why we are sizing it bottom-up, not from a Gartner total.",
+      "vc_alignment_notes": [
+        "Technical depth slide addresses Earlybird's requirement for 'AI as infrastructure with proprietary data moats'",
+        "Open standards architecture directly supports European digital sovereignty — no hyperscaler lock-in",
+        "3D-Policy-Model as novel IP with patent pending signals defensibility beyond execution — critical for deep-tech investors",
+        "Kubernetes-native, open-source components reduce customer adoption friction while maintaining platform stickiness through the governance layer"
+      ]
+    },
+    {
+      "slide_number": 7,
+      "slide_type": "market-sizing",
+      "title": "€1.5B DACH Opportunity — Built Bottom-Up from ICP Count",
+      "headline": "70,000 German mid-market companies with 50–500 employees are the ICP; at current AI adoption trajectory, ~30,000 will be active buyers of AI infrastructure by 2027 — at €50K average annual contract.",
+      "bullets": [
+        "TAM — Global AI Platform + MLOps intersection: $18.2B (2025) growing to $94B by 2030 at 38.9% CAGR (MarketsandMarkets); European share ~30% = ~$5.5B; this is the addressable technology spend category NeuraPlox competes in",
+        "SAM — DACH Mittelstand AI infrastructure buyers: 70,000 companies with 50–500 employees (IfM Bonn) × projected 45% AI adoption rate by 2027 (extrapolating Bitkom 2024→2025 +80% YoY) = ~30,000 active AI-investing companies needing infrastructure; at €50K average contract value = €1.5B/year DACH SAM",
+        "SOM — Year 3 realistic capture: 50 customers × €60K average annual contract = €3.0M ARR direct; + ecosystem revenue (SDK licensing, Plox certification fees, revenue share at 15–25%) = €3.0–3.5M ARR total; requires <0.2% of DACH SAM — well within reach for a direct + partner sales motion",
+        "Bottom-up pricing validation: Median KMU IT budget €200–500K/year; KI budget = 2.3% of IT (Horvath 2025) = €4,600–11,500/year currently allocated; NeuraPlox at €2,000/month substitutes existing per-project infrastructure spend of €48–90K/project — ROI positive from project 1"
+      ],
+      "metrics": [
+        "TAM: ~€5B (European AI Platform + MLOps, 2025)",
+        "SAM: €1.5B/year (DACH Mittelstand AI infrastructure, 2027 projection)",
+        "SOM Year 3: €3.0–3.5M ARR (50 direct customers + ecosystem)",
+        "ICP count: ~30,000 companies · Target ACV: €50–60K/year"
+      ],
+      "speaker_notes": "We are not using a top-down 'capture 1% of $94B' methodology. Here is the bottom-up build: Germany has exactly 70,000 companies in the 50–500 employee band. Bitkom data shows AI adoption growing 80% in a single year. Even at a conservative 45% adoption rate by 2027, that is 30,000 companies actively investing in AI who will need infrastructure like NeuraPlox. Winning 50 of those — less than 0.2% — gets us to €3M ARR. The ceiling is genuinely large; the initial goal is precisely scoped.",
+      "transition_to_next": "Now let me show you the business model that captures that market — and why the economics improve meaningfully with each customer we add.",
+      "vc_alignment_notes": [
+        "Bottom-up market sizing with explicit ICP count and ACV methodology is a stated Earlybird deck requirement",
+        "SOM target of €3M ARR by Year 3 is conservative and credible — VCs distrust hockey sticks; this signals commercial maturity",
+        "Market sizing rooted in cited Bitkom/IfM data, not analyst estimates, consistent with Earlybird's 'data-driven narrative' preference"
+      ]
+    },
+    {
+      "slide_number": 8,
+      "slide_type": "business-model",
+      "title": "SaaS-Anchored, Ecosystem-Amplified Revenue Model",
+      "headline": "Three deployment tiers generate recurring platform revenue; the Plox ecosystem adds a high-margin, zero-CAC revenue layer that scales with partner adoption.",
+      "bullets": [
+        "📦 Tier 1 — Managed Service: Neurawork operates NeuraPlox in dedicated cloud; €2,000–8,000/month (€24–96K/year); targets KMU without cloud ops capability; fastest onboarding (<2 weeks platform, <6 weeks first Plox); highest gross margin tier (~75–80% at scale, estimated)",
+        "☁️ Tier 2 — Customer Cloud: Deployed in customer's Azure/AWS/GCP subscription; €1,500–5,000/month (€18–60K/year); customer bears infrastructure cost; targets KMU with existing cloud strategy and data sovereignty requirements",
+        "🏢 Tier 3 — On-Premise/Hybrid: Annual licence for regulated sectors (healthcare, finance, public sector); bespoke pricing; highest ACV, longest sales cycle; targets strict data residency requirements",
+        "🔄 Ecosystem Revenue (non-dilutive, scales with partner adoption): SDK licensing to ISVs and system integrators; 15–25% revenue share on third-party Ploxe sold via Agent Registry marketplace; Plox certification fees (3-tier: Basic / Verified / Certified); collectively adds 15–25% revenue uplift per customer as ecosystem matures",
+        "📈 Unit economics trajectory: Entry ACV €24K → target blended ACV €60K (through Plox upsell from 1–2 to 4–6 active agents per customer by Year 3); gross margin estimated 65% (managed service Year 1) → 78%+ (Year 3, as platform R&D amortises across larger customer base)"
+      ],
+      "metrics": [
+        "Entry ACV: €24,000/year (Managed Service minimum)",
+        "Target blended ACV: €60,000/year (Year 3, including Plox expansion)",
+        "Gross margin estimate: 65% (Year 1) → 78%+ (Year 3)",
+        "Target NDR: >120% (via Plox expansion from avg 1.5 → 5 agents/customer)"
+      ],
+      "speaker_notes": "The model is deliberately designed around substitution, not addition. NeuraPlox replaces €48–90K of infrastructure cost that the customer is already spending per AI project. So the platform sale is not a new budget line — it is a budget reallocation that delivers a lower total cost of AI ownership from project 1. The ecosystem layer is where the multiple expansion lives: every third-party ISV that builds a Plox generates platform revenue at near-zero incremental cost. Think of it as the App Store model applied to enterprise AI agents — we take 15–25% of every transaction.",
+      "transition_to_next": "The model looks compelling on paper — but what evidence do we have that customers will pay? Let me show you where we are commercially today.",
+      "vc_alignment_notes": [
+        "Ecosystem revenue model with revenue share mirrors Earlybird portfolio company patterns (HiveMQ marketplace, remberg partner ecosystem)",
+        "Target NDR >120% addresses Earlybird's specific NDR metric requirement",
+        "Gross margin trajectory from 65%→78% shows improving capital efficiency over time — aligns with 'burn multiple below 1.5x' thesis",
+        "Substitution-not-addition framing reduces sales friction and shortens payback — consistent with Earlybird's capital efficiency focus"
+      ]
+    },
+    {
+      "slide_number": 9,
+      "slide_type": "traction",
+      "title": "25 Delivered Projects. 4 Active Pilots. ZIM-Validated.",
+      "headline": "Pre-commercial but not pre-proof: Neurawork has the rarest early-stage asset — practitioner-grade evidence from 25 real deployments that validate both the problem and the solution architecture.",
+      "bullets": [
+        "🏗️ Platform validation (TRL 4): Core NeuraPlox architectural components validated in 4 live customer environments with real enterprise data — LLM gateway + RAG engine (3 projects), ML pipeline + pattern recognition (1 tax advisory project), data integration connectors across all 4 projects with heterogeneous source systems",
+        "🧪 Pilot pipeline (converting to TRL 7): 3 formal pilot customers under LOI across target verticals — professional services, real estate investment, startup — each with ≥2 documented AI use cases; target: all 3 live in production by Month 12",
+        "✅ Institutional validation: ZIM R&D grant awarded (€236K, 45% of €526K project; Germany's competitive national innovation fund with <50% approval rate) — external validation of technical novelty and commercial viability by BMWK-appointed reviewers",
+        "🎓 Delivery track record: 25+ completed KI projects in DACH Mittelstand — due diligence AI systems, automated order processing, nursing staff allocation automation, warehouse logistics AI — bootstrapped revenue base funding current operations",
+        "📊 Team velocity: 20 engineers assembled bootstrapped in 24 months; TÜV SÜD-certified AI training programme generating inbound pipeline from DACH enterprise clients"
+      ],
+      "metrics": [
+        "Live pilot customers: 4 (3 under formal LOI for NeuraPlox deployment)",
+        "Prior KI project deliveries: 25+",
+        "ZIM grant approved: €236,588 (45% subsidy — competitive national programme)",
+        "Team size: 20 (bootstrapped, no external capital to date)",
+        "[NOTE TO INVESTOR: ARR not yet recognised — transition from project revenue to platform subscription is the core commercial milestone funded by this raise]"
+      ],
+      "speaker_notes": "I want to be direct with you: we are pre-ARR on the platform product. But I would argue our traction profile is actually stronger than a company with €200K ARR from 3 customers, because we have 25 deployments of evidence that the problem is real, 4 concurrent pilots validating the platform architecture with real enterprise data, a nationally competitive R&D grant validating technical novelty, and a 20-person team assembled without a euro of VC. The question is not whether there is a market — we have lived inside it for two years. The question is how fast we can productise what we know.",
+      "transition_to_next": "The go-to-market strategy is designed to convert this pipeline efficiently — here is the motion.",
+      "vc_alignment_notes": [
+        "Honest pre-revenue framing builds trust with sophisticated investors — Earlybird will verify claims; transparency reduces DD friction",
+        "ZIM grant approval signals external technical validation from a rigorous national innovation body — meaningful signal for German/European VCs",
+        "Bootstrapped-to-20-engineers demonstrates capital efficiency that directly maps to Earlybird's 'burn multiple below 1.5x' thesis",
+        "Delivery track record across 25 projects provides domain expertise proof required by Earlybird's investment criteria"
+      ]
+    },
+    {
+      "slide_number": 10,
+      "slide_type": "go-to-market",
+      "title": "Land-and-Expand via Direct Sales + ISV Partner Ecosystem",
+      "headline": "A direct 'land with one Plox' motion converts the 70K German Mittelstand ICP; a partner channel of IT houses and ISVs multiplies reach without linear headcount growth.",
+      "bullets": [
+        "🎯 ICP definition: IT Director / CTO / technical founder; company size 50–500 employees; DACH region; has attempted ≥1 AI project and hit infrastructure or compliance friction; sectors: professional services, real estate, tax/accounting, manufacturing (in that priority order); typical trigger event: first AI project over budget and under-delivered, or EU AI Act compliance review imminent",
+        "📞 Sales motion — Direct (Year 1): Solution Architect-led technical sales; free 2-week architecture assessment as top-of-funnel; proof-of-value with one pilot Plox; convert to managed service subscription; estimated sales cycle 6–10 weeks (shortened by assessment-to-proposal pipeline); target: 10 customers by end of Year 1",
+        "🤝 Partner channel (Year 2 activation): 5–10 certified IT consultancies and system houses as NeuraPlox resellers; each partner builds ≥1 proprietary domain Plox (vertical lock-in); partners receive SDK access, co-marketing support, and margin on customer subscriptions; ISVs (e.g., Sage, DATEV ecosystem partners) build Ploxe for their install base — zero CAC customer acquisition for Neurawork",
+        "📣 Content & inbound: Thought leadership in Computerwoche, Markt und Mittelstand, IT-Zoom; EU AI Act compliance content marketing targeting compliance-anxiety buyers; conference presence at Bitkom Digital Office, Hannover Messe; LinkedIn campaigns to IT-Director/CTO persona in DACH KMU segment",
+        "🌍 Geographic expansion (Year 3): Austria and Switzerland via local partner companies; same product, same architecture, same regulatory framework (EU AI Act applies EU-wide)"
+      ],
+      "metrics": [
+        "Target sales cycle: 6–10 weeks (Managed Service tier)",
+        "Year 1 target: 10 paying customers (direct sales)",
+        "Year 2 target: 30–50 customers (direct + 5–10 active partners)",
+        "Partner leverage ratio target: 40% of new ARR via channel by Year 3"
+      ],
+      "speaker_notes": "The go-to-market has two gears. In Year 1, we are a direct sales company: our Solution Architect goes in, does a two-week architecture assessment, proves value with a single Plox use case, and converts to a subscription. The average cycle will be 6–10 weeks because the customer has already experienced the pain — we are not creating demand, we are meeting it. In Year 2, we layer in a partner channel: every IT consultancy that builds a domain Plox becomes a distribution node. A DATEV-ecosystem partner selling a tax advisory Plox is our zero-CAC acquisition engine into a customer segment we could not reach directly.",
+      "transition_to_next": "The reason this motion will work is our competitive position — let me show you the landscape and where NeuraPlox sits.",
+      "vc_alignment_notes": [
+        "Partner ecosystem strategy mirrors successful Earlybird portfolio GTM patterns (remberg's partner channel in industrial maintenance)",
+        "EU AI Act compliance content marketing is highly aligned with Earlybird's European regulatory expertise positioning",
+        "Channel leverage model supports capital-efficient growth — partners multiply revenue without proportional headcount",
+        "DACH-first with EU expansion mirrors geographic expansion playbook Earlybird sees across its portfolio"
+      ]
+    },
+    {
+      "slide_number": 11,
+      "slide_type": "competitive-landscape",
+      "title": "The White Space No Competitor Occupies",
+      "headline": "Plotted on Full-Stack Depth vs. Mittelstand Accessibility, NeuraPlox occupies an uncontested position — every competitor is either too shallow, too expensive, or too narrow.",
+      "bullets": [
+        "AXIS 1 — Full-stack AI infrastructure depth (Low→High): High = covers all 7 layers from runtime to agent governance; Low = single-layer tools (frameworks, guardrails, productivity apps). AXIS 2 — Mittelstand price accessibility (Low→High): High = <€50K/year entry; Low = >€100K/year or requires enterprise consulting teams",
+        "Quadrant mapping: [Bottom-left, Deep but inaccessible] Palantir Foundry (€150K+/year, requires Palantir team), Dataiku (€48K+/year, no agent governance). [Top-left, Accessible but shallow] Langdock ($15M ARR but application-layer only, no infrastructure), Microsoft 365 Copilot (user productivity, no agent registry or MLOps). [Bottom-right, Deep but library only] LangChain/CrewAI (free but require full custom infrastructure build, no governance). [Top-right, UNCLAIMED — NeuraPlox target position] Full 7-layer stack + Mittelstand-priced + EU AI Act compliant",
+        "Key differentiators vs. each competitor class: vs. Hyperscalers (Azure/AWS/GCP) — cloud-agnostic, no vendor lock-in, Mittelstand abstraction layer; vs. Enterprise platforms (Dataiku, DataRobot) — agent-centric architecture, EU AI Act governance, 2–6× lower price; vs. Agent frameworks (LangChain, CrewAI) — full production infrastructure + governance (the 60% they omit); vs. Productivity AI (Langdock, Copilot) — platform not application, MLOps + agent identity governance + bidirectional data access",
+        "Structural moat: The 3D-Policy-Model treating AI agents as First-Class identities with individual permission matrices, lifecycle management, and audit trails is implemented in no existing product — it is the governance primitive the EU AI Act requires and the market has not yet built"
+      ],
+      "metrics": [
+        "Entry price comparison: NeuraPlox €24K/year vs. Dataiku €48K/year (2×) vs. Palantir €150K+/year (6×+)",
+        "Deployment time: NeuraPlox <6 weeks vs. Palantir/Dataiku 3–6+ months",
+        "Nearest full-stack competitor with Mittelstand pricing: None identified across 7 analysed categories"
+      ],
+      "speaker_notes": "The competitive map has a genuinely empty quadrant, and that is unusual — most pitches claim white space that does not exist. But I challenge any investor to name a product that delivers all seven infrastructure layers, treats AI agents as governed identities with EU AI Act audit trails, and is priced for a company spending €200K on IT annually. Langdock is the closest in price but is an application built on other people's infrastructure — they could not become NeuraPlox without rebuilding from the ground up. The agent frameworks are the closest in philosophy but provide zero of the production infrastructure — they are the problem, not the solution.",
+      "transition_to_next": "The white space is real — but only if the team can fill it. Let me introduce the people building NeuraPlox.",
+      "vc_alignment_notes": [
+        "Category creation narrative is explicit: NeuraPlox is defining a new market segment — 'AI OS for Mittelstand' — analogous to UiPath/RPA or remberg/XRM",
+        "Competitive analysis across 7 categories mirrors the ZIM document depth — shows Earlybird that founders have done the work",
+        "No direct competitor in the target quadrant supports Earlybird's 'category creation' investment thesis",
+        "EU AI Act compliance moat addresses Earlybird's European sovereignty positioning"
+      ]
+    },
+    {
+      "slide_number": 12,
+      "slide_type": "team",
+      "title": "Operators Who Have Lived the Problem They Are Solving",
+      "headline": "Two founders with 15+ combined years at Tier-1 enterprises (PwC, TÜV SÜD, Allianz, Oliver Wyman) built a 20-person engineering team bootstrapped — the rarest combination of enterprise credibility and startup execution.",
+      "bullets": [
+        "👤 Christoph Knöll — CEO & Architect: Former PwC Senior Manager (Business Transformation), TÜV SÜD Innovator; led large-scale AI transformation programmes at enterprise clients; brings structured methodology, client credibility, and deep KMU-context technical leadership to NeuraPlox architecture and customer delivery",
+        "👤 Sylvia Knöll — COO & Transformation Lead: Transformation expertise from Allianz and Oliver Wyman; brings enterprise change management, process design, and partner relationship capabilities — critical for the partner channel and customer success motions in Year 2+",
+        "🛠️ Engineering team (18 engineers): Kubernetes-native platform development (multi-tenancy, GitOps, Helm); ML/AI engineering (PyTorch, TensorFlow, LangChain, RAG pipelines, MLflow); German NLP and PII detection (spaCy, Flair); EU AI Act and DSGVO compliance architecture; 25+ live project deployments as a collective proving ground",
+        "🏅 Domain expertise proof: TÜV SÜD-certified AI training programme (external validation of regulatory expertise); 25 KI projects delivered across 5 sectors; ZIM grant successfully navigated (requires documented technical novelty and commercial viability — a de facto technology due diligence process)",
+        "🔮 Key hires planned (post-funding): Senior Platform Engineer (scale L1 infrastructure), Customer Success Manager (pilot-to-paid conversion), Solution Architect (sales engineering), DevOps/SRE (production reliability) — all funded in use of funds breakdown"
+      ],
+      "metrics": [
+        "Combined enterprise experience: 15+ years (PwC, TÜV SÜD, Allianz, Oliver Wyman)",
+        "Team assembled bootstrapped: 20 engineers in 24 months",
+        "KI projects delivered by team: 25+ across 5 sectors",
+        "Technical certifications: TÜV SÜD AI training certification programme"
+      ],
+      "speaker_notes": "The thing that makes this team unusual is not just the credentials — it is the combination. Christoph spent years at PwC watching large enterprises fail to transfer AI methodology to mid-market clients, then spent two years at Neurawork watching mid-market clients fail at AI execution for a precise and fixable reason. NeuraPlox is not a product someone ideated from outside the market — it is the direct output of 25 painful project learnings distilled into reusable infrastructure. That practitioner lineage is the reason the technical architecture is as detailed and risk-aware as it is.",
+      "transition_to_next": "Given this team and this traction, let me show you the financial picture — where we are, where we are going, and what we need to get there.",
+      "vc_alignment_notes": [
+        "Earlybird requires 'founders who deeply understand the vertical they serve' — Christoph's PwC + TÜV SÜD background directly proves enterprise AI transformation expertise in German market context",
+        "Bootstrapped team assembly demonstrates capital efficiency and talent attraction ability without institutional backing",
+        "TÜV SÜD certification signals relationship with a key German trust institution — relevant for customer acquisition in regulated DACH sectors",
+        "Planned hire structure (post-funding) shows commercial readiness — founders know what is needed next"
+      ]
+    },
+    {
+      "slide_number": 13,
+      "slide_type": "financials",
+      "title": "Bootstrapped to Breakeven — Raising to Scale",
+      "headline": "Neurawork is operationally self-sustaining on consulting revenue; NeuraPlox R&D is ZIM-co-funded; the Series A/seed raise accelerates commercial productisation — not survival.",
+      "bullets": [
+        "📊 Current financial position: Bootstrapped to 20 FTE on consulting/project revenues; ZIM grant of €236K (45% of €526K R&D programme) approved and activating; no external equity raised to date; company is operationally cash-generating from services business — the raise is acceleration capital, not runway capital",
+        "📈 Revenue trajectory (projected): Year 0 (current): Services-derived operational base, NeuraPlox platform pre-revenue; Year 1 post-raise: €600K ARR (10 platform customers × €60K avg ACV); Year 2: €2.4M ARR (40 customers × €60K + early ecosystem revenue); Year 3: €3.0–3.5M ARR (50 direct customers + partner channel + Plox marketplace)",
+        "💰 Cost structure: R&D (platform buildout): 60% of raise in Year 1; Sales & Marketing (direct sales + partner activation): 25%; Operations & G&A: 15%; Gross margin trajectory: 65% (Year 1, managed service dominant) → 78%+ (Year 3, platform + ecosystem blend)",
+        "🔢 Capital efficiency targets: Burn multiple target <1.5× new ARR generated per euro of net cash burned; revenue-to-raised ratio target approaching 1:1 by Year 2 (€2.4M ARR vs. estimated €2–3M raised); ZIM grant reduces effective equity dilution by providing non-dilutive R&D co-financing"
+      ],
+      "metrics": [
+        "Current ARR (platform): Pre-revenue (pilot conversion Q1 Year 1)",
+        "ZIM R&D grant: €236,588 non-dilutive (activating)",
+        "Year 1 ARR target: €600,000 (10 customers)",
+        "Year 3 ARR target: €3,000,000–3,500,000",
+        "Target burn multiple: <1.5× (new ARR / net cash burned)",
+        "[NOTE: Burn rate and runway months require confirmation post-term-sheet financial disclosure]"
+      ],
+      "speaker_notes": "The financial story here is important to get right. We are not burning cash to build a prototype and hoping for revenue. We are a profitable consulting business funding our own R&D, with a nationally competitive government grant co-financing the platform build. The investor capital goes into the commercial acceleration — sales engineering, customer success, partner activation — not into keeping the lights on. That is a materially different risk profile than a pre-revenue company with six months of runway. Our target is to hit €600K ARR in Year 1 with fewer than 12 sales headcount, which implies a burn multiple well below 1.5×.",
+      "transition_to_next": "Which brings me to what we are asking for and precisely how we will deploy it.",
+      "vc_alignment_notes": [
+        "Capital efficiency narrative is central to Earlybird's thesis — burn multiple target of <1.5× and revenue-to-raised ratio approaching 1:1 directly address stated investment criteria",
+        "Non-dilutive ZIM grant financing signals ability to leverage non-equity capital — Earlybird values founders who protect cap table",
+        "Services business as operational base eliminates existential runway risk — Earlybird can assess this as acceleration bet, not survival bet",
+        "Gross margin trajectory from 65%→78% shows improving unit economics — consistent with platform business scaling characteristics Earlybird portfolio companies exhibit"
+      ]
+    },
+    {
+      "slide_number": 14,
+      "slide_type": "the-ask",
+      "title": "Raising €2.5M Seed to Convert Pilots to Platform at Scale",
+      "headline": "€2.5M seed round funds the 18-month sprint from TRL-7 prototype to €1.5M ARR with 20+ paying customers — the proof point that unlocks a Series A at platform scale.",
+      "bullets": [
+        "💶 Raise: €2.5M seed (seeking lead investor; ZIM grant of €236K non-dilutive co-financing already secured); use of proceeds over 18 months: Product & Engineering 40% (€1.0M — complete L1–L7 platform, ISO 27001/42001 certifications, SDK release); Sales & Customer Success 35% (€875K — 2 Solution Architects, 1 CSM, pilot-to-paid conversion programme, 10 partner contracts signed); Marketing & Brand 15% (€375K — Mittelstand content, conference presence, EU AI Act compliance campaign); Operations & G&A 10% (€250K)",
+        "🎯 18-month milestones unlocking Series A: (1) €1.5M ARR from ≥20 paying platform customers; (2) ≥3 ISV/system integrator partners with ≥1 live Plox each in Agent Registry; (3) ISO 27001 + ISO 42001 certified; (4) Avg customer Plox count ≥3 (proves land-and-expand); (5) Documented NDR ≥110% from cohort 1",
+        "📊 Series A bridge logic: At €1.5M ARR with 110%+ NDR and 3+ certified ISV partners, NeuraPlox is a demonstrably multi-stakeholder ecosystem platform — not just an AI consultancy with recurring revenue; this justifies a €10–15M Series A to accelerate EU-wide expansion and deepen the Plox marketplace",
+        "🏆 Why Earlybird: European AI infrastructure category creation aligned with your portfolio (Aleph Alpha at enterprise/sovereign layer; NeuraPlox at Mittelstand/SME infrastructure layer — complementary, not competing); domain expertise in DACH enterprise AI; network in German industrial and financial services sectors accelerates our partner channel",
+        "📞 Next step: 2-week architecture review session with your technical partner + pilot customer reference calls"
+      ],
+      "metrics": [
+        "Raise amount: €2.5M seed",
+        "Non-dilutive co-funding: €236K ZIM grant (already approved)",
+        "Target ARR at 18 months: €1.5M",
+        "Target customer count at 18 months: ≥20 paying platform customers",
+        "Series A target: €10–15M (Month 24–30, subject to milestones)"
+      ],
+      "speaker_notes": "We are asking for €2.5M. That is a precise number, not a negotiating anchor. It covers 18 months of commercial execution with a burn multiple target below 1.5×. The milestones are binary and verifiable: €1.5M ARR, 20 paying customers, 3 certified ISV partners, ISO certifications complete. If we hit those in 18 months, we have a compelling Series A story. If we miss, we have a services business that keeps us alive while we iterate. The ZIM grant is already approved and reduces your effective check by €236K in project-period value. We see Earlybird specifically because your portfolio at the European AI infrastructure layer — Aleph Alpha at the foundation model level, EthonAI at industrial inspection, remberg at industrial maintenance — has a conspicuous gap at the Mittelstand AI OS layer. NeuraPlox fills that gap.",
+      "transition_to_next": "For the technically inclined, the final slide goes deeper on the architecture that makes this defensible.",
+      "vc_alignment_notes": [
+        "Explicit Earlybird portfolio fit argument (Aleph Alpha complement) demonstrates investor research and alignment — Earlybird invests in founders who understand their portfolio",
+        "Milestones framed as 'Series A unlocking events' — Earlybird thinks in terms of milestone-based funding rounds; this framing is native to their model",
+        "Burn multiple target explicit in use of funds — directly addresses stated Earlybird investment criterion",
+        "ISO certifications as milestone addresses European trust infrastructure theme Earlybird values",
+        "NDR milestone (≥110%) addresses Earlybird's specific NDR metric requirement"
+      ]
+    },
+    {
+      "slide_number": 15,
+      "slide_type": "ai-architecture",
+      "title": "Technical Appendix: The 7-Layer Moat in Detail",
+      "headline": "NeuraPlox is defensible at every layer — open standards prevent lock-in for customers while proprietary governance primitives create switching costs for Neurawork.",
+      "bullets": [
+        "L1–L3 EXECUTION LAYER (Open, community-driven): Kubernetes-native operator (custom CRDs + Helm charts — 'helm install neuraplox' single command deployment); GitOps via ArgoCD (full audit trail of infrastructure changes — EU AI Act Art. 12 compliance); MLflow model registry + Feast feature store (eliminates training-serving skew); pgvector/Milvus dual-track vector DB strategy (PostgreSQL extension for SME scale, Milvus for high-volume); Hybrid-Search RAG (BM25 + Dense Retrieval + Reciprocal Rank Fusion + Cross-Encoder reranking = +15–30% retrieval accuracy vs. pure vector search, critical for heterogeneous German document corpora including OCR-noisy PDFs, Excel exports, and email threads)",
+        "L4 OBSERVABILITY (Proprietary integration, open standards): OpenTelemetry distributed tracing across all 7 layers (CNCF standard — no lock-in); Langfuse self-hosted LLM observability (open source, data never leaves customer boundary — a deliberate sovereignty decision); per-agent cost attribution enabling verifiable SLA billing and EU AI Act risk dashboards per agent; 100% trace coverage target — no unobserved agent action",
+        "L5 UNIFIED DATA ACCESS (Proprietary connector framework, novel for agentic use): N+M architecture reduces integration complexity from combinatorial to linear; bidirectional read/write connectors (vs. read-only data fabric tools like Denodo/Dremio) — uniquely required for AI agents that take actions in source systems; German-language PII detection using Presidio + fine-tuned German BERT (de_core_news_lg) targeting >95% precision/recall — addresses a specific and documented gap in English-trained models on German compound words and industry terminology",
+        "L6 POLICY ENGINE — Core IP (Proprietary, patent pending): 3D-Policy-Model: Agent Identity × Action Type × Data Category — a three-dimensional permission matrix enforced at runtime; agents are First-Class citizens with individual lifecycle states (Draft→Staging→Production→Deprecated), permission matrices, and immutable audit trails; Prompt Firewall (pre-LLM) + Output Control (post-LLM) with target <2-second end-to-end latency for 4-stage cascade (vs. NeMo Guardrails 500ms single-stage baseline); deklarative YAML policy configuration enabling compliance changes without code deployment",
+        "L7 AGENT REGISTRY + ECOSYSTEM (Network effects, proprietary): Centralised agent identity store with semantic versioning and parallel version management; 3-tier certification framework (Basic/Verified/Certified) enabling trusted third-party Plox distribution; API-first (OpenAPI spec) enabling CI/CD integration and ISV marketplace distribution; open SDK strategy: execution layers (L1–L3) open-sourced to drive developer adoption; governance layers (L4–L7) remain proprietary — the asymmetric open/closed strategy that builds community while protecting the commercial moat"
+      ],
+      "metrics": [
+        "RAG accuracy improvement: +15–30% vs. pure vector search (published Enterprise RAG benchmarks)",
+        "PII detection target: >95% precision AND recall on German business documents (DSGVO compliance threshold)",
+        "Policy pipeline latency target: <2 seconds for 4-stage cascade (vs. 500ms single-stage in NeMo Guardrails)",
+        "Agent consistency target: >80% result consistency across 10 repetitions in 3-agent chains",
+        "IP status: NeuraPlox trademark filed at DPMA; 3D-Policy-Model patent application in preparation; Governance L4–L7 protected as trade secret under GeschGehG"
+      ],
+      "speaker_notes": "For your technical due diligence, here is the honest moat assessment. The execution layers (L1–L3) are built on open standards — Kubernetes, Helm, MLflow, Feast — because proprietary runtime infrastructure creates customer lock-in risk and maintenance burden. Our moat is not the runtime; it is what we built above and around it. The 3D-Policy-Model is genuinely novel: no existing product manages AI agents as identity-bearing entities with individual permission matrices. We searched — we built it because it did not exist. The Agent Registry with its 3-tier certification creates a network effect: the more ISVs build Ploxe on our registry, the more valuable the platform becomes to each customer, and the higher the switching cost for everyone. That is the compounding defensibility story.",
+      "transition_to_next": "This concludes the deck. We welcome a deep-dive technical session and can arrange pilot customer reference calls within one week of an initial commitment.",
+      "vc_alignment_notes": [
+        "Technical depth slide directly addresses Earlybird's 'AI as infrastructure with proprietary data moats' and 'deep tech with clear commercialisation path' criteria",
+        "Open/closed asymmetric strategy (L1–L3 open, L4–L7 proprietary) mirrors successful Earlybird portfolio patterns (HiveMQ open-source core, enterprise features proprietary)",
+        "Network effects in Agent Registry ecosystem create platform-level defensibility — consistent with category creation thesis",
+        "German PII detection as a specific technical challenge signals vertical specialisation and domain depth — not generic AI tooling",
+        "Patent strategy and IP protection demonstrate commercial seriousness appropriate for an institutional investor conversation"
+      ]
+    }
+  ],
+  "narrative_arc": "Neurawork has spent 2 years inside the KMU AI failure problem — 25+ projects, 20 engineers, bootstrapped profitability — and has discovered that the root cause is not lack of use cases but lack of reusable infrastructure. NeuraPlox is the answer: a 7-layer AI operating system for the European Mittelstand that turns a 6-month, €150K infrastructure build into a 6-week, €24K/year platform subscription. The story moves from systemic pain (86% KMU want AI, only 23% succeed) through a technically defensible product (7 layers, EU AI Act compliance by design, N+M not N×M) to a capital-efficient, founder-operated business with 4 live pilot projects, a €1.5B DACH SAM, and a clear Series A bridge from today's ZIM-funded TRL-7 prototype to €3M ARR in year 3.",
+  "gaps_identified": [
+    "No confirmed ARR or MRR figure — pilot projects exist but no paying customer revenue disclosed; slide 9 will note 'pre-revenue, pilots converting' and use proxy metrics",
+    "No burn rate or monthly cash outflow disclosed — financials slide will use ZIM grant and employee count as proxies",
+    "No NDR figure — company is pre-commercial; flagged as 'target NDR >120% by Year 2'",
+    "No gross margin actuals — estimated based on SaaS + managed service model comparables",
+    "No confirmed raise amount for Series A — ZIM grant of €236K is disclosed; investor raise target not stated in document; slide 14 will propose a plausible €2–3M seed/pre-Series A based on company stage",
+    "No named paying customers — 4 pilot clients referenced by sector only (services, real estate, startup, tax advisory)",
+    "No CAC or payback period actuals — company is pre-commercial; estimates used",
+    "No ACV actuals — pricing model documented but no signed contracts disclosed",
+    "No win rate data disclosed",
+    "No sales cycle length data — estimated from managed service onboarding timeline",
+    "Growth rate YoY is not applicable (company is pre-revenue/pre-commercial product)"
+  ],
+  "gaps_filled": {}
+}

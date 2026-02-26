@@ -4,7 +4,7 @@ from pitchdeck.models import DocumentParseError
 
 
 def extract_document(path: str) -> str:
-    """Extract text from PDF or DOCX file."""
+    """Extract text from PDF, DOCX, Markdown, or plain text file."""
     if path.lower().endswith(".pdf"):
         from .pdf import extract_pdf
 
@@ -13,5 +13,8 @@ def extract_document(path: str) -> str:
         from .docx_parser import extract_docx
 
         return extract_docx(path)
+    elif path.lower().endswith((".md", ".txt")):
+        with open(path, encoding="utf-8") as f:
+            return f.read()
     else:
-        raise DocumentParseError(path, "Unsupported format. Use PDF or DOCX.")
+        raise DocumentParseError(path, "Unsupported format. Use PDF, DOCX, MD, or TXT.")

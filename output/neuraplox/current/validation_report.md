@@ -1,8 +1,8 @@
 # Deck Validation Report
 
-**Deck**: NeuraPlox
+**Deck**: 
 **Target VC**: Earlybird Capital
-**Validated**: 2026-02-26T20:48:56.450983
+**Validated**: 2026-02-26T23:54:18.862393
 **Overall Score**: 88/100 — **PASS** (threshold: 60)
 
 ---
@@ -29,17 +29,16 @@
 - Speaker notes on 15/15 slides
 
 **Evidence Missing:**
-- 5 data gaps identified: Platform ARR = 0 — by design; consulting revenue >€1M and ZIM grant fund operations and R&D, No signed platform contracts yet — four LOIs from ZIM pilots, conversion expected post-platform GA, CTO hire in progress — active search targeting Q2 2026; Senior Architect leads platform engineering interim, NDR proxy (~150%) derived from consulting expansion behavior — direct platform NDR data pending post-launch, Exact consulting revenue figure >€1M disclosed as floor; detailed financials available in data room
+- 10 data gaps identified: Exact NDR figure from consulting business not available — used qualitative proxy, Exact monthly burn rate not confirmed — used EUR 80-100K framing from updates doc, Number of repeat customers among named logos (Eventos, Falkensteg, Kalkül, Primus, Valor) not specified — used 100% consulting-to-platform conversion framing, Gross margin on consulting revenue not confirmed — used 30% from updates doc, CAC figure not available — deck notes this is pre-product-sales stage
 
 ### Metrics Density
 
 **Score**: 100/100
-**Rationale**: 44 metrics found (~29 expected from templates). 8/8 VC emphasis metrics addressed.
+**Rationale**: 44 metrics found (~29 expected from templates). 7/8 VC emphasis metrics addressed.
 
 **Evidence Found:**
 - 44 metrics across deck
 - Found: ARR and YoY growth rate
-- Found: Net Dollar Retention (NDR)
 - Found: Gross margin trajectory
 - Found: Burn multiple (new ARR / cash burned)
 - Found: Capital efficiency ratio (revenue / total raised)
@@ -47,65 +46,69 @@
 - Found: ACV and expansion revenue
 - Found: Bottom-up SOM with methodology
 
+**Evidence Missing:**
+- Missing: Net Dollar Retention (NDR)
+
 ### Narrative Coherence
 
 **Score**: 78/100
-**Rationale**: The deck follows a disciplined investor psychology arc — Hook (cover + problem + exec summary), Tension (solution + product + why-now), Resolution (competitive + traction), Proof (business model + market + GTM), Trust (financials + team), Ask (the-ask + closing vision). Transitions between slides are explicitly scripted and logically connected. The SAP analogy is introduced early and reinforced consistently through the close. The three-horizon business model narrative (consulting → SaaS → marketplace) is coherent and each slide builds on the prior. However, two structural issues prevent a higher score: (1) the executive summary on slide 3 front-loads the business model and traction before the solution is explained, creating a mild sequencing tension — investors are told 'three-horizon model' before understanding what the product does; (2) the ai-architecture slide (slide 15) is used as a closing vision slide, which is unconventional and slightly confusing given its slide type label — it functions as a 'why Europe' manifesto but the label creates cognitive dissonance. The narrative is polished and clearly rehearsed, but the exec summary placement and the closing slide's dual identity (vision + contact) slightly dilute the arc's crispness.
+**Rationale**: The deck follows a disciplined investor psychology arc: the cover hooks with practitioner credibility and bootstrapped revenue, the problem slide builds tension with quantified failure rates, the solution resolves it with measured outcomes, traction provides proof, team builds trust, and the ask is specific and milestone-anchored. Transitions between slides are explicit and purposeful — each slide ends with a forward bridge that maintains momentum. The 'consulting-to-platform' thread is woven consistently throughout, which is the deck's strongest narrative device. Minor deductions: the AI architecture slide (15) placed after the ask (14) disrupts the closing momentum — it reads as an appendix but is positioned as a primary slide, creating a structural anti-climax. The executive summary (slide 2) front-loads too much detail that is better revealed progressively, slightly diluting the hook-tension dynamic. The 'why now' slide (4) is strong but the EU AI Act urgency could be more viscerally connected to the customer pain established in slide 3.
 
 **Evidence Found:**
-- Explicit transition language between every slide creates a guided investor journey
-- SAP analogy introduced on slide 1 and reinforced on slides 3, 7, 10, and 15 — consistent category creation thread
-- Hook-Tension-Resolution-Proof-Trust-Ask arc is structurally present across 15 slides
-- Three-horizon model (consulting → SaaS → marketplace) is introduced early and elaborated progressively
-- Speaker notes demonstrate awareness of investor psychology at each slide turn
-- Problem slide (slide 2) uses structural framing ('three compounding failures') rather than anecdote — appropriate for data-driven VC
+- Explicit transition sentences on every slide maintain forward momentum
+- Consulting-to-platform conversion narrative is consistent from slide 2 through slide 10
+- Hook-Tension-Resolution arc: cover (hook) → problem 86%/23% gap (tension) → 6-week deployment solution (resolution) → EUR 2M bootstrapped (proof) → Google advisors (trust) → EUR 3M ask (close)
+- Problem framing in slide 3 uses a single memorable statistic (63pp gap) as the anchor
+- Financial slide (13) reframes the ask before the ask slide — smart sequencing
+- Speaker notes reinforce narrative discipline with specific opening lines per slide
 
 **Evidence Missing:**
-- Executive summary (slide 3) reveals business model and traction before solution is explained — creates mild sequencing confusion for first-time readers
-- Slide 15 labeled 'ai-architecture' but functions as a vision/closing manifesto — type mismatch creates structural ambiguity
-- No dedicated 'vision' or 'why we win' slide distinct from the ask — the closing vision is compressed into the final slide alongside contact info
-- The why-now slide (slide 6) appears after the competitive landscape setup is partially established on slides 4-5, slightly disrupting the tension-before-resolution flow
+- AI architecture slide (15) placed after the ask disrupts closing momentum — should be appendix or repositioned before the ask
+- Executive summary (slide 2) pre-empts too much of the progressive reveal, reducing tension in subsequent slides
+- No single customer story or mini case study to make the problem/solution arc emotionally concrete — all evidence is aggregate
+- Why-now slide (4) does not explicitly connect EU AI Act urgency back to the named customer logos, missing a personalization opportunity
+- The transition from competitive landscape (11) to team (12) is the weakest link — no explicit bridge explaining why this team wins this specific competitive battle
 
 ### Thesis Alignment
 
 **Score**: 82/100
-**Rationale**: NeuraPlox addresses all seven of Earlybird's thesis points with varying depth. European digital sovereignty is the strongest alignment — it is woven into the product architecture (DSGVO-compliant PII, EU data residency), the GTM (93% German provider preference), the regulatory angle (EU AI Act), and the closing vision. Category creation is explicitly framed with the 'Agent OS' label and SAP/UiPath analogies that directly mirror Earlybird's stated investment pattern. Capital efficiency is quantitatively defended with ZIM grant leverage, consulting revenue offset, and explicit burn multiple targets. AI as infrastructure is addressed through the N+M architecture and commoditization rebuttal. The weakest alignment is on 'global winner potential from European base' — the deck gestures at DACH-to-Europe expansion but the international path is thin (SI partners, marketplace) and lacks specificity on timing, target markets, or competitive dynamics outside DACH. Industrial/enterprise domain expertise is present but narrowly concentrated in financial services; the deck lists warehouse logistics and care worker placement as past projects but does not develop these as verticals, which limits the perceived depth of domain expertise beyond finserv.
+**Rationale**: The deck addresses all seven Earlybird thesis points with varying depth. European sovereignty is present but somewhat implicit — it appears as a feature (cloud-agnostic, on-premise, GDPR) rather than a strategic identity. Category creation is strongly framed ('Agent OS') with explicit analogies to SAP and Stripe. Capital efficiency is the deck's single strongest thesis alignment — EUR 2M bootstrapped with near-zero burn multiple is exceptional evidence. AI as infrastructure is architecturally demonstrated through the 7-layer stack. Deep tech commercialization is proven by 25+ deployments. Global winner potential is mapped but the pathway from DACH to global feels optimistic given current team size. Domain expertise is credibly established through the PwC/Allianz founding story. The one notable gap is that European sovereignty is not positioned as a competitive differentiator in the competitive landscape slide — it should be a named axis given Earlybird's portfolio thesis around Aleph Alpha.
 
 **Evidence Found:**
-- European digital sovereignty: DSGVO-compliant PII detection, EU data residency by architecture, EU AI Act compliance as product feature, ZIM grant as German government validation — all present
-- Category creation: 'Agent OS' explicitly named, SAP/UiPath/remberg analogies used, category-creation window timing argument on slide 6
-- Capital-efficient growth: burn multiple target <1.5×, ZIM covers 45% R&D, consulting >€1M offsets operations, bootstrapped to 15 people — all quantified
-- AI as infrastructure not veneer: N+M architecture, 3D-Policy governance moat, commoditization rebuttal on slides 4 and 7, proprietary vs. open IP strategy
-- Deep tech with clear commercialization path: TRL 4→7 progression, ZIM grant validation, four live pilots, 25+ deployments
-- Industrial/enterprise domain expertise: PwC M&A/IT strategy, Allianz/Oliver Wyman transformation, EU AI Act certification, financial services vertical depth
+- Thesis 1 (European sovereignty): Cloud-agnostic, on-premise deployment, GDPR-native PII detection, EU AI Act compliance layer — present in slides 4, 6, 15
+- Thesis 2 (Category creation): 'Agent OS' framing, SAP/Stripe analogies, empty top-right quadrant in competitive 2x2 — slides 1, 5, 11
+- Thesis 3 (Capital efficiency): EUR 2M revenue, zero raised, burn multiple ~0, consulting-as-CAC model — slides 2, 9, 13
+- Thesis 4 (AI as infrastructure): 7-layer stack with proprietary L4-L7 moat, N+M connector architecture, 3D Policy Model — slides 6, 15
+- Thesis 5 (Deep tech commercialization): 25+ production deployments, TRL 4 confirmed, ZIM grant validation — slides 2, 9, 14
+- Thesis 6 (Global winner potential): DACH → EU-27 → global marketplace pathway, Google Cloud CEE advisory — slides 7, 10, 12
+- Thesis 7 (Domain expertise): PwC M&A/AI strategy + Allianz transformation pedigree, 25 deployments as domain proof — slide 12
 
 **Evidence Missing:**
-- Global winner potential: international expansion path is vague — 'DACH → Austria, Switzerland, Benelux via local SI partners' lacks timeline, competitive analysis, or named partner commitments
-- Industrial/enterprise domain expertise beyond financial services: warehouse logistics and care worker placement mentioned but not developed as verticals with depth
-- No named or semi-named enterprise logos even at anonymized level — 'tax advisory pilot' is thin; Earlybird explicitly requires named or anonymized customer evidence with quantified ROI at a higher specificity level
-- Dr. Andre Retterath's specific focus areas (developer tools, OSS, robotics) are not directly addressed — no developer ecosystem or OSS community strategy beyond SDK mention
+- Thesis 1 (European sovereignty): Not positioned as a named competitive axis in the competitive landscape slide — a missed opportunity given Earlybird's Aleph Alpha investment and sovereignty thesis
+- Thesis 6 (Global winner potential): Team of 4-5 engineers executing DACH + EU-27 + global marketplace simultaneously is not credibly staffed — the global ambition outpaces the current organizational capacity shown
+- Thesis 3 (Capital efficiency): No explicit burn multiple calculation shown as a formula — the ~0 claim is made but not derived transparently for a skeptical investor
+- Thesis 4 (Proprietary data moat): The data moat from 25+ deployments (training data, domain-specific patterns) is not explicitly articulated — this is a significant missed opportunity to claim a data flywheel
 
 ### Common Mistakes
 
 **Score**: 74/100
-**Rationale**: The deck avoids most common pitch mistakes with notable discipline. The AI commoditization risk is proactively addressed on slides 4, 7, and 15 — a sophisticated rebuttal that positions governance as the durable asset as models commoditize. Bottom-up SOM is present with explicit methodology (70,000 ICPs × 45% adoption × €50K ACV). Customer ROI is quantified (~40% manual review reduction, €48K–€90K infrastructure savings). NDR proxy is disclosed with methodology (~150% from 1–2 to 4–6 use cases). Use-of-funds is broken down (50% CTO/engineers, 30% platform GA, 20% SDK/marketplace). Gross margin trajectory is explicitly shown (30%→70%→80%+). However, three issues prevent a higher score: (1) the deck is architecturally heavy — slides 4 and 5 together spend significant real estate on the 7-layer architecture, 3D-Policy model, and technical specifications (PII precision/recall targets, policy evaluation latency) that are more appropriate for a data room than a pitch deck; (2) the NDR proxy is clearly labeled as a proxy derived from consulting behavior, not platform data — sophisticated investors will discount this heavily and the deck does not sufficiently pre-empt the objection; (3) competitive positioning, while framed as category creation, does not name specific competitors with specific feature comparisons — 'Palantir/Dataiku' are mentioned but no direct feature matrix is shown.
+**Rationale**: The deck avoids most common pitfalls with notable discipline. AI commoditization is proactively addressed in the competitive slide with the 'tailwind not headwind' framing. Bottom-up SOM is explicitly methodologized. Customer ROI is quantified (60% → <30% infrastructure cost, EUR 45-75K saved per project). Use of funds is broken down with percentages. However, the deck over-indexes on architectural detail — slide 15 is a full technical deep-dive that belongs in a data room appendix, not as the closing primary slide. NDR is absent as a hard metric, replaced by a qualitative proxy that a sophisticated VC will notice. The competitive positioning is strong on the two named axes but does not address the emerging threat from hyperscaler-native agent orchestration (AWS Bedrock Agents, Azure AI Foundry) which are moving rapidly into the mid-market. The title/headline quality is consistently strong and data-driven throughout — a genuine strength.
 
 **Evidence Found:**
-- AI commoditization risk proactively addressed on slides 4, 7, and 15 with specific rebuttal (governance becomes MORE valuable as models commoditize)
-- Bottom-up SOM with explicit methodology: 70,000 ICPs (IfM Bonn) × 45% adoption × €50K ACV = €1.5B SAM, SOM <0.2%
-- Customer ROI quantified: ~40% manual review time reduction, €48K–€90K/year infrastructure savings
-- NDR proxy disclosed with methodology and appropriate caveat (consulting expansion behavior)
-- Use-of-funds broken down: 50% CTO/engineers, 30% platform GA, 20% SDK/marketplace beta
-- Gross margin trajectory explicitly shown: 30% (consulting) → 70% (SaaS) → 80%+ (marketplace)
-- CTO gap proactively disclosed with interim plan — self-awareness over concealment
-- Zero platform ARR disclosed upfront with explanation — no attempt to obscure pre-revenue status
+- AI commoditization proactively addressed: 'Commoditization is our tailwind, not our risk' framing in slide 11
+- Bottom-up SOM with explicit methodology: 70,000 companies × 45% adoption × EUR 24-60K ACV = EUR 1.5B — slide 7
+- Quantified customer ROI: infrastructure cost 60% → <30%, EUR 45-75K saved per project, 3-6 months → <6 weeks — slide 5
+- Use of funds breakdown with percentages: 60% engineering, 20% GTM, 12% ZIM, 8% ops — slide 14
+- Competitive positioning uses differentiated axes (completeness vs. accessibility) rather than generic feature matrix — slide 11
+- Titles and headlines are consistently specific and data-driven throughout all 15 slides
+- NDR gap is transparently acknowledged with a proxy methodology rather than silently omitted
 
 **Evidence Missing:**
-- Architecture over-indexing: slides 4 and 5 contain technical specifications (PII precision/recall >95%, policy evaluation latency <2s, 4-stage pipeline) more appropriate for data room than seed pitch
-- NDR proxy weakness: ~150% NDR derived from consulting behavior is a significant methodological leap — no platform cohort data exists and the deck does not sufficiently pre-empt investor skepticism on this metric
-- No direct feature comparison matrix for competitive slide — 'Palantir/Dataiku/LangChain' mentioned but no side-by-side feature table showing specific capability gaps
-- Revenue projections (€600K → €2.4M → €3M ARR) lack supporting assumptions — no customer count ramp, churn assumptions, or sales capacity model shown
-- No mention of existing investor or advisor names — zero social proof from angels, advisors, or prior institutional interest
+- Over-indexing on architecture: Slide 15 is a full technical deep-dive positioned as a primary closing slide — should be appendix material, disrupts the business narrative close
+- Hard NDR metric absent: The qualitative proxy ('100% of pilots from existing clients') is not a substitute for a retention rate — sophisticated investors will flag this gap
+- Hyperscaler threat not addressed: AWS Bedrock Agents, Azure AI Foundry, and Google Vertex AI Agent Builder are moving into mid-market orchestration — their absence from the competitive analysis is a credibility gap
+- YoY revenue growth rate not explicitly stated as a headline metric — implied but not calculated (Year 1 baseline unknown, making Year 2 EUR 2M growth rate unverifiable)
+- LTV/CAC ratio absent — even an estimated range would strengthen the unit economics story given the land-and-expand model described
 
 ---
 
@@ -113,13 +116,13 @@
 
 | Check | Status | Evidence |
 |-------|--------|----------|
-| European sovereignty angle must be present | PASS | Keywords found: sovereign, european, europe, digital sovereignty |
-| Bottom-up market sizing required (not just top-down TAM) | PASS | Keywords found: bottom-up, som, icp count, arpu |
+| European sovereignty angle must be present | PASS | Keywords found: sovereign, european, europe, data sovereignty |
+| Bottom-up market sizing required (not just top-down TAM) | PASS | Keywords found: bottom-up, som |
 | Capital efficiency must be explicitly highlighted | PASS | Keywords found: capital efficien, burn multiple, revenue-to-raised, capital-efficient |
 | Named or anonymized customer evidence with quantified ROI | PASS | Keywords found: customer, pilot, roi, evidence |
 | AI commoditization risk must be proactively addressed | PASS | Keywords found: commodit, moat, defensib, proprietary |
 | Gross margin trajectory must be shown or discussed | PASS | Keywords found: gross margin, margin trajectory |
-| Category creation narrative should be present | PASS | Keywords found: category, defining, new market, category creation |
+| Category creation narrative should be present | PASS | Keywords found: category, category creation |
 
 ---
 
@@ -128,104 +131,122 @@
 ### Slide 1: cover — 100/100
 
 **Suggestions:**
-- Strong category-creation hook with 'Agent OS' label and governance-safe subtitle. The SAP-era framing is appropriate for Earlybird. Minor issue: 'Neurawork GmbH & Co. KG' in metrics creates brand confusion — company is called NeuraPlox but legal entity is Neurawork, which requires explanation and may cause investor confusion on first impression.
+- Strong cover — 'Agent OS' category framing is memorable and the EUR 2M bootstrapped metric creates immediate credibility. Minor issue: company name inconsistency ('Neurawork' in speaker notes vs. 'NeuraPlox' as product name) could create confusion about what is the company vs. the product. Clarify the brand architecture.
 
-### Slide 2: problem — 100/100
-
-**Suggestions:**
-- Excellent structural framing of three compounding failures. The 63-point intention-action gap (86% vs 23%) is a powerful data point. The N×M tax concept is introduced here effectively. Weakness: the €1.5B 'infrastructure gap' headline metric is not sourced or derived — it appears to be a forward-looking market claim presented as a current gap, which sophisticated investors will question.
-
-### Slide 3: executive-summary — 100/100
+### Slide 2: executive-summary — 100/100
 
 **Suggestions:**
-- Effective 30-second filter slide. SAP analogy lands well. However, placing the executive summary as slide 3 (after cover and problem) means investors see the business model summary before understanding the product — creates mild sequencing confusion. The '>€1M consulting revenue' floor disclosure is appropriately transparent but the vagueness may frustrate data-driven investors.
+- Executive summary is information-dense and accurate but front-loads too much of the progressive reveal. The EUR 2M ARR equivalent label is technically imprecise — consulting/services revenue is not ARR. This distinction will be immediately challenged by a VC; label it 'EUR 2M+ revenue' or 'EUR 2M+ services revenue' to avoid a credibility hit on the first substantive slide.
 
-### Slide 4: solution — 100/100
-
-**Suggestions:**
-- N+M architecture concept is the deck's strongest intellectual contribution — the combinatorial explosion metaphor is compelling and memorable. The 60%→<30% infrastructure cost reduction and 3–6 months→<6 weeks implementation claims are strong but lack customer evidence citations. The AI commoditization rebuttal is well-placed here.
-
-### Slide 5: product — 100/100
+### Slide 3: problem — 100/100
 
 **Suggestions:**
-- Most technically dense slide in the deck — 3D-Policy model, PII detection targets, policy evaluation latency, 4-stage pipeline, 3-tier certification, open/closed IP strategy all on one slide. This is data room content compressed into a pitch slide. The moat argument is strong but the execution dilutes it. Recommend stripping to: 3D-Policy concept, one key differentiator vs. NeMo Guardrails, and the open/closed IP strategy.
+- Best problem slide in the deck. The N×M trap is a genuinely memorable framing device. The 63pp gap (86% intent vs. 23% execution) is a powerful anchor statistic. Third-party citations (maximal.digital, Bitkom) add credibility. The pricing exclusion point (EUR 150K+ Palantir pricing out 70,000 DACH companies) is sharp and specific.
 
-### Slide 6: why-now — 100/100
-
-**Suggestions:**
-- Strong why-now with four distinct catalysts. The August 2026 EU AI Act deadline is the most powerful urgency driver and is correctly led. The 93% German provider preference stat (Bitkom 2025) is a compelling sovereignty signal. The 25+ consulting projects as demand signal is the most credible proof point on this slide.
-
-### Slide 7: competitive-landscape — 100/100
+### Slide 4: why-now — 100/100
 
 **Suggestions:**
-- Category creation framing is well-executed and directly mirrors Earlybird's stated investment pattern. The four-layer moat (architectural, network, regulatory, sovereign) is a sophisticated defensibility argument. Weakness: no visual competitive matrix — the positioning claims are text-only, which makes the 'we stand alone' argument harder to internalize quickly.
+- Why-now slide is solid with four distinct catalysts. The EU AI Act August 2026 deadline is the strongest urgency driver and should be the lead bullet, not the second. The EUR 94B TAM figure appears here before the market sizing slide — creates slight redundancy. The Germany AI adoption near-doubling stat (20% → 36%) is a strong local proof point that deserves more prominence.
 
-### Slide 8: traction — 94/100
+### Slide 5: solution — 100/100
 
 **Suggestions:**
-- Consider adding more metrics (3/5 present)
-- Best traction slide possible given pre-platform-revenue status. The upfront disclosure of zero platform ARR with explanation is the right approach. The NDR proxy methodology is transparent. The ZIM grant as credibility signal is well-used. Critical weakness: 'tax advisory pilot' is the only named use case with quantified ROI — four pilots are mentioned but only one is described with outcomes.
+- Solution slide effectively leads with outcomes before architecture. The Stripe/SAP analogies are appropriate for the category creation narrative. The EUR 24K/year price anchor vs. EUR 80-150K self-build is compelling. However, 'Operations as a Service' is introduced here without sufficient definition — it appears again in slide 8 but the first mention needs a one-line definition to avoid confusion.
 
-### Slide 9: business-model — 94/100
+### Slide 6: product — 100/100
+
+**Suggestions:**
+- Product slide is technically strong but risks losing non-technical investors in the L1-L7 layer enumeration. The open/proprietary split is the key insight and should be the headline visual concept. The PII detection precision/recall target (>95%) is appropriately flagged as a target, not a measurement — good epistemic hygiene. Consider leading with the business outcome of each layer rather than the technical description.
+
+### Slide 7: market-sizing — 97/100
+
+**Suggestions:**
+- Consider adding more metrics (4/5 present)
+- Market sizing is the deck's most methodologically rigorous slide. Bottom-up DACH calculation is explicit and defensible. The EU-27 SAM claim (EUR 10B+) is asserted rather than derived — needs a one-line methodology (e.g., 'DACH SAM × EU-27/DACH GDP ratio'). The SOM Year 3 calculation (50 customers × EUR 60K ACV) is appropriately conservative and directly connected to existing pipeline.
+
+### Slide 8: business-model — 84/100
+
+**Issues:**
+- Exceeds word limit: 139 words (max 130)
 
 **Suggestions:**
 - Consider adding more metrics (3/5 present)
-- Three-horizon model is clearly articulated and the gross margin trajectory (30%→70%→80%+) directly addresses Earlybird's stated metric requirement. The 'consulting is not the business, it is the R&D lab' framing is the right rebuttal to the productization objection. The marketplace economics (15–25% rev share) are credible. Burn multiple target <1.5× is explicitly stated.
+- Business model slide is well-structured with the three-horizon gross margin trajectory. The Shopify analogy is apt. The land-and-expand mechanic (1 Plox → 4-6 Ploxes) is the NRR driver but lacks a timeline or measured expansion rate from existing clients. The 30% consulting margin claim needs a footnote or data room reference — it is a key input to the financial model and will be scrutinized.
 
-### Slide 10: market-sizing — 94/100
+### Slide 9: traction — 87/100
 
-**Suggestions:**
-- Consider adding more metrics (3/5 present)
-- Bottom-up methodology is present and sourced (IfM Bonn). The <0.2% SOM penetration framing is appropriately conservative and credible. The global context ($18.2B→$94B) is top-down but correctly positioned as context, not primary sizing. The SAP/DACH-to-global analogy is well-placed. Weakness: the 36%→45% AI adoption projection (2025→2027) is a trend extrapolation presented without methodology.
-
-### Slide 11: go-to-market — 100/100
+**Issues:**
+- Exceeds word limit: 131 words (max 130)
 
 **Suggestions:**
-- GTM is capital-efficient and logically structured. The ~€0 CAC via consulting pipeline is the strongest capital efficiency argument in the deck. The 60–90 day sales cycle estimate is specific and credible for managed service entry. The ISO 27001/42001 as procurement differentiator shows vertical ICP precision. Weakness: no named SI partners or consultancy relationships — the partner channel is described as a plan, not a pipeline.
+- Consider adding more metrics (4/5 present)
+- Traction slide is the deck's strongest proof point. The EUR 170K/month revenue vs. EUR 80-100K cost framing is viscerally compelling. Named logos (Eventos, Falkensteg, Kalkül, Primus, Valor) add specificity. The NDR proxy methodology is transparently labeled as a proxy — intellectually honest. Weakness: no industry vertical breakdown of the 5 logos, which would help assess ICP concentration risk.
 
-### Slide 12: financials — 97/100
+### Slide 10: go-to-market — 90/100
+
+**Issues:**
+- Exceeds word limit: 156 words (max 130)
+
+**Suggestions:**
+- GTM slide is logically structured across three phases. The AWS open-source playbook analogy is appropriate. Year 2 target (EUR 2.4M ARR, 40 customers) implies 4x growth from Year 1 (EUR 600K, 10 customers) — this growth rate is aggressive and should be justified with pipeline data or conversion rate assumptions. The channel partner model for EU-27 is plausible but no named partners or LOIs are mentioned.
+
+### Slide 11: competitive-landscape — 100/100
+
+**Suggestions:**
+- Competitive landscape is above average. The two-axis framing (completeness vs. accessibility) is differentiated and defensible. The Langdock/Copilot complementary positioning is sophisticated. Critical gap: AWS Bedrock Agents, Azure AI Foundry, and Google Vertex AI Agent Builder are absent — these are the most credible competitive threats and their omission will be noticed by any technical investor. The moat description is strong but needs a 'why can't they copy this in 12 months' answer.
+
+### Slide 12: team — 90/100
+
+**Issues:**
+- Exceeds word limit: 156 words (max 150)
+
+**Suggestions:**
+- Team slide is credible but the husband-wife founding team dynamic, while noted as capital-efficient, may raise governance questions from institutional investors — a brief note on board composition or independent oversight would preempt this. The Google Cloud advisory is genuinely valuable and well-positioned as a channel signal rather than a vanity board. The 4-5 engineer team size relative to the ambition described creates a credibility gap that the post-Seed hiring plan partially addresses.
+
+### Slide 13: financials — 97/100
 
 **Suggestions:**
 - Consider adding more metrics (3/4 present)
-- Revenue trajectory is clear but the assumptions are thin — €600K ARR from 10 customers implies €60K ACV which is the expansion ACV, not the entry ACV (€24K). This inconsistency needs reconciliation. The break-even at 40–50 customers is a useful anchor. The flywheel description is appropriate here but the international expansion narrative feels premature for a seed deck.
-
-### Slide 13: team — 100/100
-
-**Suggestions:**
-- Team slide is honest and appropriately self-aware about the CTO gap. The PwC/Allianz/Oliver Wyman pedigree is strong for enterprise credibility. The '25+ deployments = unfair product intuition' framing is effective. Critical weakness: 13 engineers are described only by function (ML/AI, DevOps, NLP) with no names, LinkedIn profiles, or prior company affiliations — this is a significant trust gap for a seed-stage team evaluation.
+- Financials slide is unusually strong for a pre-Seed deck. The 'Seed builds the product, not the company' reframe is memorable. The gross margin trajectory (30% → 70% → 80%+) is explicitly shown. The 20-24 month runway calculation is transparent. Weakness: the Year 2 EUR 2.4M ARR target (40 customers) implies signing ~30 new platform customers in 12 months with a team that has never done platform sales — the ramp assumption needs more support.
 
 ### Slide 14: the-ask — 100/100
 
 **Suggestions:**
-- The ask is clean and well-defended. One number (€2M), explicit use-of-funds breakdown, 18-month milestones, and Series A bridge metrics are all present. The ZIM leverage argument (€2M goes further because 45% R&D is pre-funded) is the strongest capital efficiency argument in the deck. The urgency framing (category window + EU AI Act deadline) is appropriate without being hyperbolic.
+- Ask slide is well-structured with percentage breakdowns and milestone anchoring. The ZIM grant non-dilutive co-funding angle is a genuine differentiator and well-positioned. The Series A bridge (EUR 2M+ ARR → EUR 10-15M Series A) is appropriately framed as a target, not a commitment. Minor issue: EUR 360K labeled as 'ZIM grant co-funding contribution' is ambiguous — clarify whether this is the company's matching contribution to receive the grant or the grant itself.
 
-### Slide 15: ai-architecture — 100/100
+### Slide 15: ai-architecture — 90/100
+
+**Issues:**
+- Exceeds word limit: 192 words (max 150)
 
 **Suggestions:**
-- Effective closing vision that lands the European sovereignty thesis emotionally. The Earlybird portfolio references (remberg, HiveMQ, Aleph Alpha) are intentional and appropriate — shows homework. However, the slide type label 'ai-architecture' is a mismatch for what is functionally a vision/closing slide. The contact info placement is correct. The 'Open. Governed. European.' tagline is memorable and thesis-aligned.
+- AI architecture slide is technically impressive and clearly written for Dr. Andre Retterath specifically — the HiveMQ playbook reference is a deliberate alignment signal. However, its placement after the ask is structurally problematic: it deflates the closing momentum and reads as an afterthought despite containing the deck's strongest technical IP claims. The patent filing intent for agent-centric governance is important but flagged as 'planned' — this needs to be filed before the Seed closes to be a credible moat claim. Recommend moving to appendix or repositioning before the ask.
 
 ---
 
 ## Top Strengths
 
-1. European sovereignty thesis is architecturally embedded, not bolted on: DSGVO-compliant PII detection, EU data residency by design, EU AI Act compliance as product feature, ZIM grant as German government validation, and 93% German provider preference as GTM tailwind — this is the most complete sovereignty argument in any deck targeting Earlybird's thesis
-2. Capital efficiency is quantitatively exceptional for seed stage: bootstrapped to 15 people with >€1M consulting revenue covering operations, €237K ZIM grant covering 45% of core R&D, explicit burn multiple target <1.5×, and ~€0 CAC via consulting pipeline — the effective capital efficiency of this raise is genuinely differentiated
-3. AI commoditization risk is proactively and sophisticatedly addressed: the argument that governance + integration becomes MORE valuable as models commoditize (slides 4, 7, 15) is the correct intellectual response to the most common objection against AI infrastructure companies, and it is woven throughout the deck rather than relegated to a single defensive slide
+1. Exceptional capital efficiency proof: EUR 2M bootstrapped revenue with near-zero burn multiple is a top-decile signal for a pre-Seed company — the 'Seed builds the product, not the company' narrative is genuinely differentiated and directly addresses Earlybird's capital efficiency thesis with hard evidence rather than projections.
+2. Practitioner-to-product origin story with quantified validation: The 25+ deployment foundation is not just a credibility claim — it is operationalized into specific measurements (60% → <30% infrastructure cost, 3-6 months → <6 weeks deployment) that make the product thesis empirically grounded rather than hypothetical, directly satisfying Earlybird's requirement for named customer evidence with quantified ROI.
+3. Comprehensive Earlybird thesis coverage with deliberate alignment signals: The deck addresses all seven Earlybird thesis points, includes all required metrics categories, passes all seven VC custom checks, and contains specific portfolio references (HiveMQ OSS playbook, remberg category creation) that demonstrate genuine research into the investor's mental model — the technical architecture slide is explicitly written for Dr. Andre Retterath's known focus areas.
 
 ## Critical Gaps
 
-1. Zero platform revenue with no signed contracts and only LOIs from ZIM pilots: the deck is transparent about this but the gap between >€1M consulting revenue and €0 platform ARR is the single largest risk factor — the conversion assumption (consulting clients become platform clients) is unproven and the 18-month revenue trajectory (€600K ARR from 10 customers) rests entirely on this unvalidated conversion
-2. CTO absence at platform launch stage: the most technically complex product milestone (platform GA) is being led by an interim Senior Architect while the CTO search is ongoing — for an enterprise infrastructure company positioning on architectural moat and governance depth, the absence of a named technical co-founder or CTO is a material credibility gap that sophisticated investors will weight heavily
-3. NDR proxy is methodologically weak and the deck's retention story is therefore unsubstantiated: ~150% NDR derived from consulting engagement expansion behavior is not platform NDR — the two revenue models have fundamentally different retention dynamics, and presenting consulting expansion as a proxy for SaaS NDR will be challenged by any experienced enterprise software investor; the deck needs either a more conservative retention assumption or a clearer disclaimer that this metric is aspirational
+1. Hard NDR metric is absent and the proxy is insufficient: '100% of pilots from existing clients' is a pipeline quality metric, not a retention metric. Earlybird explicitly lists NDR as a key metric. Even a rough estimate (e.g., 'all 5 accounts have expanded scope YoY, implying >120% NDR equivalent') would be more defensible than the current proxy — this gap will be the first question in any partner meeting.
+2. Hyperscaler competitive threat is unaddressed: AWS Bedrock Agents, Azure AI Foundry, and Google Vertex AI Agent Builder are actively targeting the mid-market orchestration layer with aggressive pricing and native cloud integration advantages. Their absence from the competitive landscape slide is a significant credibility gap — a sophisticated investor will raise this immediately, and the deck has no prepared answer. This is the single most dangerous omission.
+3. Global ambition is understaffed and the scaling logic is unproven: The deck maps a DACH → EU-27 → global trajectory with a 4-5 engineer team and no named channel partners, no signed reseller agreements, and no marketplace supply-side commitments. The Year 2 target of 40 platform customers (4x growth) with a first-time sales hire is aggressive without pipeline data to support it. The gap between the ambition of the narrative and the organizational capacity shown creates a credibility tension that the ask slide does not fully resolve.
 
 ## Improvement Priorities (ordered by impact)
 
-1. Zero platform revenue with no signed contracts and only LOIs from ZIM pilots: the deck is transparent about this but the gap between >€1M consulting revenue and €0 platform ARR is the single largest risk factor — the conversion assumption (consulting clients become platform clients) is unproven and the 18-month revenue trajectory (€600K ARR from 10 customers) rests entirely on this unvalidated conversion
-2. CTO absence at platform launch stage: the most technically complex product milestone (platform GA) is being led by an interim Senior Architect while the CTO search is ongoing — for an enterprise infrastructure company positioning on architectural moat and governance depth, the absence of a named technical co-founder or CTO is a material credibility gap that sophisticated investors will weight heavily
-3. NDR proxy is methodologically weak and the deck's retention story is therefore unsubstantiated: ~150% NDR derived from consulting engagement expansion behavior is not platform NDR — the two revenue models have fundamentally different retention dynamics, and presenting consulting expansion as a proxy for SaaS NDR will be challenged by any experienced enterprise software investor; the deck needs either a more conservative retention assumption or a clearer disclaimer that this metric is aspirational
+1. Hard NDR metric is absent and the proxy is insufficient: '100% of pilots from existing clients' is a pipeline quality metric, not a retention metric. Earlybird explicitly lists NDR as a key metric. Even a rough estimate (e.g., 'all 5 accounts have expanded scope YoY, implying >120% NDR equivalent') would be more defensible than the current proxy — this gap will be the first question in any partner meeting.
+2. Hyperscaler competitive threat is unaddressed: AWS Bedrock Agents, Azure AI Foundry, and Google Vertex AI Agent Builder are actively targeting the mid-market orchestration layer with aggressive pricing and native cloud integration advantages. Their absence from the competitive landscape slide is a significant credibility gap — a sophisticated investor will raise this immediately, and the deck has no prepared answer. This is the single most dangerous omission.
+3. Global ambition is understaffed and the scaling logic is unproven: The deck maps a DACH → EU-27 → global trajectory with a 4-5 engineer team and no named channel partners, no signed reseller agreements, and no marketplace supply-side commitments. The Year 2 target of 40 platform customers (4x growth) with a first-time sales hire is aggressive without pipeline data to support it. The gap between the ambition of the narrative and the organizational capacity shown creates a credibility tension that the ask slide does not fully resolve.
+4. Fix slide 8 (business-model): Exceeds word limit: 139 words (max 130)
+5. Fix slide 9 (traction): Exceeds word limit: 131 words (max 130)
+6. Fix slide 10 (go-to-market): Exceeds word limit: 156 words (max 130)
 
 ---
 
 ## Recommendation
 
-NeuraPlox presents one of the more thesis-aligned seed decks for Earlybird's Fund VII mandate — the European sovereignty angle is architecturally genuine rather than cosmetic, the capital efficiency story is quantitatively strong, and the category creation framing (Agent OS) mirrors Earlybird's stated investment pattern with appropriate intellectual rigor. The deck earns a serious look. However, three issues must be resolved before a term sheet conversation is credible: first, the CTO gap is existential for a company positioning on architectural moat — the raise should be contingent on a named CTO hire or the deck should present a named technical advisor with board-level commitment as interim credibility; second, the revenue trajectory assumptions need reconciliation (Year 1 €600K ARR implies €60K ACV but entry ACV is €24K — the ramp model is internally inconsistent and will be caught in diligence); third, the traction slide needs at least two additional anonymized pilot case studies with quantified outcomes beyond the single tax advisory example, as Earlybird explicitly requires named or anonymized customer evidence with quantified ROI across multiple engagements. If these three gaps are addressed, this deck is a strong candidate for a first partner meeting with Dr. Andre Retterath given the enterprise software infrastructure thesis alignment — the current version warrants an exploratory call but not yet a full partner presentation.
+NeuraPlox presents one of the stronger pre-Seed decks in the enterprise AI infrastructure category — the bootstrapped EUR 2M revenue, near-zero burn multiple, and practitioner-validated product thesis are genuinely differentiated signals that align well with Earlybird's capital efficiency and domain expertise theses. To move from a strong candidate to an exceptional one, three targeted revisions are required before submission: first, replace the NDR proxy with a calculated retention estimate using ACV expansion data from the 5 named accounts, even if approximate; second, add a dedicated competitive response to AWS Bedrock Agents and Azure AI Foundry with a specific 'why we win against hyperscalers in mid-market' argument — this is the question that will dominate the partner meeting; third, restructure the deck's closing sequence by moving the AI architecture slide (15) to an appendix and ending on the ask slide (14) with a crisp one-slide summary of the investment thesis, which will leave the room with the right final impression. The European sovereignty angle should also be elevated from a feature to a strategic identity in the competitive landscape slide, given Earlybird's Aleph Alpha investment and explicit sovereignty thesis — framing NeuraPlox as 'the Agent OS that keeps European enterprise AI in European hands' would resonate more directly with this specific investor's worldview and portfolio narrative.
